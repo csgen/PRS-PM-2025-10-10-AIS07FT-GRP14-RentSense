@@ -1,0 +1,63 @@
+services:
+
+  # PostgreSQL -- database
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${APP_DB_NAME}
+      POSTGRES_USER: ${APP_DB_USER}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${APP_DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # redis -- cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # pgAdmin -- database management tool
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # FastAPI - backend app
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_DATABASE_URL: postgresql+asyncpg://${APP_DB_USER}:${APP_DB_PASSWORD}@${APP_DB_HOST}:${APP_DB_PORT}/${APP_DB_NAME}
+      CLOUD_DATABASE_URL: postgresql+asyncpg://${CLOUD_DB_USERNAME}:${CLOUD_DB_PASSWORD}@${CLOUD_DB_HOST}:${CLOUD_DB_PORT}/${CLOUD_DB_DATABASE}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      PYTHONPATH: /app
+    volumes:
+      - .:/app
+    # Needs to be commented out when developing in containers
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload 
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+  redis_data:

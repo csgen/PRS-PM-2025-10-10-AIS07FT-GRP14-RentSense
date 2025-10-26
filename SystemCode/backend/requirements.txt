@@ -1,0 +1,28 @@
+# web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0.post1
+
+# pydantic core & settings
+pydantic==2.12.3
+pydantic-settings==2.4.0
+
+# database & ORM
+sqlmodel==0.0.14
+SQLAlchemy==2.0.44
+psycopg2-binary==2.9.9
+asyncpg==0.29.0
+geoalchemy2==0.17.0
+greenlet==3.2.4
+
+# cache
+redis==5.0.1
+
+# env config
+python-dotenv==1.1.1
+
+# llm client & http
+openai==1.12.0
+httpx==0.26.0
+
+# mapping
+folium==0.16.0
