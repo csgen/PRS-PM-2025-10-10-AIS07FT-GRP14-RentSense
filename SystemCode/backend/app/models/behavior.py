@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime, func
 from sqlmodel import Field, SQLModel
 
-from app.models.property import Property
+from app.dataservice.sql_api.api_model import ResultInfo
 
 
 class UserBehaviorBase(SQLModel):
@@ -31,6 +31,6 @@ class UserBehavior(UserBehaviorBase, table=True):
 
 
 # 用户行为完整数据，包含对应房源的详细信息，用于推荐模型训练
-class UserBehaviorComplete(UserBehaviorBase, Property):
+class UserBehaviorComplete(UserBehavior, ResultInfo):
     pass
 
