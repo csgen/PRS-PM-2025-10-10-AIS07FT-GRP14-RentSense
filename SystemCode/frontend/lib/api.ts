@@ -35,17 +35,12 @@ apiClient.interceptors.request.use(
       params: config.params,
     })
 
-
     if (config.url && config.url.includes("/api/v1/properties/map")) {
-
-      (config as CustomAxiosRequestConfig).isMapRequest = true
-
-      config.responseType = 'text'
-
-      config.headers.Accept = 'text/html'
+      ;(config as CustomAxiosRequestConfig).isMapRequest = true
+      config.responseType = "text"
+      config.headers.Accept = "text/html"
     } else {
-
-      config.headers.Accept = 'application/json, text/plain, */*'
+      config.headers.Accept = "application/json, text/plain, */*"
     }
 
     // Add auth token if available
@@ -106,7 +101,6 @@ apiClient.interceptors.response.use(
 
       if (error.response.status === 422 && error.response.data) {
         const errorData = error.response.data
-
 
         if (errorData.error_code) {
           return Promise.reject({
@@ -222,7 +216,6 @@ export const api = {
     const response = await apiClient.get<RecommendationsResponse>("/api/v1/properties/recommendation-no-submit")
     console.log("[v0] Default recommendations response:", response.data)
     if (response.data && response.data.properties) {
-
       response.data.properties = convertPropertiesCoordinates(response.data.properties)
     }
     return response
@@ -239,26 +232,133 @@ export const api = {
     return response
   },
 
-
-  getPropertyMap: async (propertyId: number, latitude: number | Decimal | string, longitude: number | Decimal | string) => {
-
-    const lat = typeof latitude === 'string' ? parseFloat(latitude) : Number(latitude)
-    const lng = typeof longitude === 'string' ? parseFloat(longitude) : Number(longitude)
+  getPropertyMap: async (
+    propertyId: number,
+    latitude: number | Decimal | string,
+    longitude: number | Decimal | string,
+  ) => {
+    const lat = typeof latitude === "string" ? Number.parseFloat(latitude) : Number(latitude)
+    const lng = typeof longitude === "string" ? Number.parseFloat(longitude) : Number(longitude)
 
     console.log("[v0] Fetching property map:", { propertyId, latitude: lat, longitude: lng })
-
 
     const response = await apiClient.post<string>("/api/v1/properties/map", {
       property_id: propertyId,
       latitude: lat,
-      longitude: lng
+      longitude: lng,
     })
 
     return {
       ...response,
       data: {
-        html: response.data
+        html: response.data,
+      },
+    }
+  },
+}
+
+interface ClickBehavior {
+  device_id: string
+  property_id: number
+}
+
+interface ViewBehavior {
+  device_id: string
+  property_id: number
+  dwell_time: number
+}
+
+interface FavouriteBehavior {
+  device_id: string
+  property_id: number
+  favourite: boolean
+}
+
+/**
+ * Behavior tracking API functions
+ * All tracking functions use fetch for silent failure without disrupting user experience
+ */
+export const behaviorApi = {
+  /**
+   * Track property click behavior
+   */
+  trackClick: async (device_id: string, property_id: number): Promise<void> => {
+    try {
+      const payload: ClickBehavior = {
+        device_id,
+        property_id,
       }
+
+      const response = await fetch(`${API_BASE_URL}api/v1/behaviors/click`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        console.error("[v0] Click tracking failed:", response.status, response.statusText)
+      }
+    } catch (error) {
+      // Silent failure - don't disrupt user experience
+      console.error("[v0] Click tracking error:", error)
+    }
+  },
+
+  /**
+   * Track property view behavior
+   */
+  trackView: async (device_id: string, property_id: number, dwell_time: number): Promise<void> => {
+    try {
+      const payload: ViewBehavior = {
+        device_id,
+        property_id,
+        dwell_time,
+      }
+
+      const response = await fetch(`${API_BASE_URL}api/v1/behaviors/view`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        console.error("[v0] View tracking failed:", response.status, response.statusText)
+      }
+    } catch (error) {
+      // Silent failure - don't disrupt user experience
+      console.error("[v0] View tracking error:", error)
+    }
+  },
+
+  /**
+   * Track property favourite behavior
+   */
+  trackFavourite: async (device_id: string, property_id: number, favourite: boolean): Promise<void> => {
+    try {
+      const payload: FavouriteBehavior = {
+        device_id,
+        property_id,
+        favourite,
+      }
+
+      const response = await fetch(`${API_BASE_URL}api/v1/behaviors/favourite`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        console.error("[v0] Favourite tracking failed:", response.status, response.statusText)
+      }
+    } catch (error) {
+      // Silent failure - don't disrupt user experience
+      console.error("[v0] Favourite tracking error:", error)
     }
   },
 }
