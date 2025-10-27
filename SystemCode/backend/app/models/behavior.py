@@ -9,8 +9,8 @@ from app.dataservice.sql_api.api_model import ResultInfo
 
 class UserBehaviorBase(SQLModel):
     device_id: Optional[str] = Field(default=None, max_length=100, index=True)
-    property_id: int  
-    duration: Optional[float] = Field(default=0.0)
+    property_id: int
+    dwell_time: Optional[float] = Field(default=0.0)
     favorite: bool = Field(default=False)
     
     update_time: datetime = Field(
