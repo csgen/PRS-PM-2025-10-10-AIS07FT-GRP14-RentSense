@@ -8,6 +8,12 @@ from app.dependencies import get_async_openai_client
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, RecommendationResponse
 from app.handlers import property_handler
 
+from app.dataservice.sql_api.func import query_housing_data_async
+from app.dataservice.sql_api.api_model import RequestInfo
+import json
+from app.dataservice.sql_api.api import fetch_recommend_properties_async
+import time
+
 
 router = APIRouter(prefix="/api/v1/properties", tags=["properties"])
 
@@ -52,3 +58,50 @@ async def map(
     location: PropertyLocation
 ):
     return await property_handler.map_handler(location=location) 
+
+# 调试函数
+def orm_to_dict(obj):
+    return {
+        c.name: getattr(obj, c.name)
+        for c in obj.__table__.columns
+        if c.name not in ("geom", "geog")
+    }
+
+@router.post("/debug/query-housing-data", response_model=None, status_code=status.HTTP_200_OK)
+async def debug_query_housing_data(
+    *,
+    db: AsyncSession = Depends(get_async_session),
+    request_info: RequestInfo
+):
+    '''
+    实例输入：
+    {
+        "min_monthly_rent": 1000,
+        "max_monthly_rent": 2500,
+        "school_id": 1,
+        "target_district_id": 3
+        "max_school_limit": 1500,
+        "flat_type_preference": [
+            "Condo"
+        ],
+        "max_mrt_distance": 1500,
+        "importance_rent": 3,
+        "importance_location": 3,
+        "importance_facility": 3
+    }
+    '''
+    start_time = time.time()
+    results = await query_housing_data_async(request=request_info)
+    data = [orm_to_dict(r) for r in results]
+
+    print(json.dumps(data, indent=2, ensure_ascii=False))
+
+@router.post("/debug/fetch_recommend_properties_async", response_model=None, status_code=status.HTTP_200_OK)
+async def debug_query_housing_data(
+    *,
+    db: AsyncSession = Depends(get_async_session),
+    request_info: RequestInfo
+):
+    results = await fetch_recommend_properties_async(request_info)
+    for r in results:
+        print(r.model_dump_json())
