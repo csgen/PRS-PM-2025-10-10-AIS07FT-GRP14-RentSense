@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.future import select
-from sqlalchemy import func, text
+from sqlalchemy import func, text, or_
 import time
+import math
 from .api_model import RequestInfo, ResultInfo
 from .model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
 from .envconfig import get_database_url_async
@@ -56,6 +57,8 @@ def get_total_score(price_norm, commute_norm, neighbourhood_norm, request):
 async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
     '''根据 RequestInfo 查询符合条件的房源'''
 
+    start_time = time.time()
+
     # 基础查询
     stmt = (
         select(HousingData)
@@ -82,38 +85,23 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
 
     # 异步执行查询
     async with AsyncSessionLocal() as session:
-        print(DATABASE_URL_ASYNC)
         result = await session.execute(stmt)
         housings = result.scalars().all()
 
         original_count = len(housings)
-        print(f"初步过滤得到{original_count}条房源记录。")
-
-        # 若结果少于50条，补充至通勤时间最短的50条（不重复）
+        print(f"在{time.time() - start_time:.2f} 秒内通过初步过滤得到{original_count}条房源记录。")
+        # 若结果少于50条，补充至50条
         target_count = 50
         if original_count < target_count:
-            existing_ids = [h.id for h in housings]
-
-            fallback_stmt = (
-                select(HousingData)
-                .join(CommuteTime, HousingData.id == CommuteTime.housing_id)
-                .where(
-                    CommuteTime.university_id == request.school_id,
-                    HousingData.id.notin_(existing_ids),
-                )
-                .order_by(CommuteTime.commute_time_minutes.asc())
-                .limit(target_count-original_count)
+            housings = await _expand_query_conditions(
+                session=session,
+                request=request,
+                existing_ids=[h.id for h in housings],
+                current_results=housings,
+                target_count=target_count
             )
-
-            fallback_result = await session.execute(fallback_stmt)
-            fallback_housings = fallback_result.scalars().all()
-            print(f"补充了{len(fallback_housings)}条房源记录以满足最小数量要求。")
-            housings.extend(fallback_housings)
-
-        # 少量去重并返回
-        housings, removed_count = remove_duplicate_housings(housings)
-        return_count = min(len(housings), target_count)
-        return housings[:return_count]
+        print(f'第一步输出前一共{len(housings)}条房源')
+        return housings[:target_count]
 
 async def filter_housing_async(housings: list[HousingData], request: RequestInfo):
     '''根据 RequestInfo 对所有房源进行过滤并计算评分'''
@@ -277,3 +265,144 @@ async def filter_housing_async(housings: list[HousingData], request: RequestInfo
     results_sorted = sorted(results, key=lambda pair: pair[1], reverse=True)[:50]
     return [pair[0] for pair in results_sorted]
 
+# 辅助函数：查询邻近的 district_id
+async def _find_nearby_districts(session: AsyncSession, district_id) -> list[int]:
+    '''根据地理位置找到距离目标 district 最近的 1-2 个相邻区域'''
+    
+    start_time = time.time()
+    if not district_id:
+        return []
+
+    # 获取目标 district 的地理位置
+    center_query = (
+        select(District.id, District.geog)
+        .where(District.id == district_id)
+    )
+    center_row = (await session.execute(center_query)).first()
+    if not center_row or not center_row.geog:
+        print(f"District {district_id} 没有地理信息，无法计算邻近区域。")
+        return []
+
+    center_geog = center_row.geog
+
+    # 查询距离最近的 2 个 district
+    # 指定半径内，再按 ST_Distance 排序
+    nearby_stmt = (
+        select(District.id)
+        .where(District.id != district_id)
+        .where(func.ST_DWithin(District.geog, center_geog, 10000))  # 10000米内
+        .order_by(func.ST_Distance(District.geog, center_geog))
+        .limit(2)
+    )
+
+    nearby_ids = (await session.execute(nearby_stmt)).scalars().all()
+
+    print(f"District {district_id} 邻近区域ID: {nearby_ids}")
+    print(f'放宽区域查询时间: {time.time() - start_time:.2f} 秒')
+    return nearby_ids
+
+# 辅助函数：根据 importance 动态放宽租金与通勤时间
+async def _expand_by_importance(
+    session: AsyncSession,
+    request: RequestInfo,
+    results: list[HousingData],
+    existing_ids: list[int],
+    target_count: int
+) -> list[HousingData]:
+    '''
+    importance_rent 越低，放宽幅度越大；
+    importance_location 越低，放宽幅度越大
+    '''
+    start_time = time.time()
+    rent_loosen_factor = (6 - (request.importance_rent or 3)) / 5  # 范围 0~1
+    location_loosen_factor = (6 - (request.importance_location or 3)) / 5
+
+    # 放宽比例
+    rent_expand_pct = 0.2 + 0.4 * rent_loosen_factor  # 租金放宽比例 20%~60%
+    commute_expand_pct = 0.2 + 0.4 * location_loosen_factor  # 通勤放宽比例 20%~60%
+
+    min_rent = math.floor(request.min_monthly_rent * (1 - rent_expand_pct) * 0.5) # 租金下限直接放宽两倍
+    max_rent = math.ceil(request.max_monthly_rent * (1 + rent_expand_pct))
+
+    commute_limit = (
+        request.max_school_limit * (1 + commute_expand_pct)
+        if request.max_school_limit else None
+    )
+
+    stmt = (
+        select(HousingData)
+        .join(CommuteTime, HousingData.id == CommuteTime.housing_id)
+        .where(
+            CommuteTime.university_id == request.school_id,
+            HousingData.price >= min_rent,
+            HousingData.price <= max_rent,
+            HousingData.id.notin_(existing_ids),
+        )
+    )
+    if commute_limit:
+        stmt = stmt.where(CommuteTime.commute_time_minutes <= commute_limit)
+
+    stmt = stmt.order_by(CommuteTime.commute_time_minutes.asc())
+    res = (await session.execute(stmt)).scalars().all()
+    print(f"根据 importance 放宽条件，新增 {len(res)} 条")
+    results.extend(res)
+    print(f'放宽租金与通勤限制查询时间: {time.time() - start_time:.2f} 秒')
+    return results
+
+# 辅助函数：放宽条件逐步补充（过滤数量太少的情况下）
+async def _expand_query_conditions(
+    session: AsyncSession,
+    request: RequestInfo,
+    existing_ids: list[int],
+    current_results: list[HousingData],
+    target_count: int
+) -> list[HousingData]:
+    """
+    按优先级逐步放宽查询条件，直到结果达到 target_count。
+    """
+    results = list(current_results)
+    print("进入放宽策略...")
+
+    start_time = time.time()
+    # 1. 放宽区域限制（邻近district），并不再限制type
+    nearby_districts = await _find_nearby_districts(session, request.target_district_id)
+    stmt = (
+        select(HousingData)
+        .join(CommuteTime, HousingData.id == CommuteTime.housing_id)
+        .where(
+            CommuteTime.university_id == request.school_id,
+            HousingData.id.notin_(existing_ids),
+            or_(
+                HousingData.district_id.in_(nearby_districts + [request.target_district_id])
+                if nearby_districts else True,
+            ),
+        )
+    )
+
+    res = (await session.execute(stmt)).scalars().all()
+    print(f"放宽地理范围 + flat_type 限制，新增 {len(res)} 条")
+    results.extend(res)
+    existing_ids.extend([r.id for r in res])
+
+    # 若仍不足目标数量，继续放宽价格与通勤限制
+    if len(results) < target_count:
+        results = await _expand_by_importance(session, request, results, existing_ids, target_count)
+
+    # 最后还不足：按通勤时间最短补齐
+    if len(results) < target_count:
+        fallback_stmt = (
+            select(HousingData)
+            .join(CommuteTime, HousingData.id == CommuteTime.housing_id)
+            .where(
+                CommuteTime.university_id == request.school_id,
+                HousingData.id.notin_(existing_ids),
+            )
+            .order_by(CommuteTime.commute_time_minutes.asc())
+            .limit(target_count - len(results))
+        )
+        fallback = (await session.execute(fallback_stmt)).scalars().all()
+        print(f"兜底补充 {len(fallback)} 条房源。")
+        results.extend(fallback)
+
+    print(f'放宽限制查询时间: {time.time() - start_time:.2f} 秒')
+    return results
