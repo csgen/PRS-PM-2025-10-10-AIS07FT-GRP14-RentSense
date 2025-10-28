@@ -31,6 +31,7 @@ class UserBehavior(UserBehaviorBase, table=True):
 
 
 # 用户行为完整数据，包含对应房源的详细信息，用于推荐模型训练
-class UserBehaviorComplete(UserBehavior, ResultInfo):
-    pass
+class UserBehaviorComplete(UserBehaviorBase, ResultInfo):
+    class Config:
+        arbitrary_types_allowed = True
 
