@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { api, type Property } from "@/lib/api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,11 +22,12 @@ import {
   Loader2,
   AlertCircle,
   ArrowUpRight,
+  Heart,
 } from "lucide-react"
 import Image from "next/image"
 import { FALLBACK_MAP_HTML } from "@/lib/constants/fallback-map"
-import { toNumber } from "@/lib/utils/decimal"
-import Decimal from "decimal.js"
+import { useBehaviorTracking } from "@/hooks/use-behavior-tracking"
+import { isFavorite, toggleFavorite } from "@/lib/favorites"
 
 export default function RentDetailPage() {
   const params = useParams()
@@ -37,6 +38,51 @@ export default function RentDetailPage() {
   const [mapHtml, setMapHtml] = useState<string>("")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isFavorited, setIsFavorited] = useState(false)
+
+  const { trackView, trackFavourite } = useBehaviorTracking()
+  const entryTimeRef = useRef<number>(Date.now())
+  const hasTrackedRef = useRef<boolean>(false)
+
+  useEffect(() => {
+    if (property) {
+      setIsFavorited(isFavorite(property.property_id))
+    }
+  }, [property])
+
+  useEffect(() => {
+    // Reset entry time when component mounts
+    entryTimeRef.current = Date.now()
+    hasTrackedRef.current = false
+
+    const sendViewTracking = () => {
+      if (!property || hasTrackedRef.current) return
+
+      const dwellTime = (Date.now() - entryTimeRef.current) / 1000
+      const dwellTimeRounded = Math.round(dwellTime * 10) / 10 // Round to 1 decimal place
+
+      console.log("[v0] Tracking view:", {
+        property_id: property.property_id,
+        dwell_time: dwellTimeRounded,
+      })
+
+      trackView(property.property_id, dwellTimeRounded)
+      hasTrackedRef.current = true
+    }
+
+    // Track on beforeunload (page close, refresh, navigation)
+    const handleBeforeUnload = () => {
+      sendViewTracking()
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    // Cleanup: track on component unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+      sendViewTracking()
+    }
+  }, [property, trackView])
 
   useEffect(() => {
     const fetchPropertyData = async () => {
@@ -54,27 +100,21 @@ export default function RentDetailPage() {
           return
         }
 
-
-        const savedData = localStorage.getItem('recommendations_data')
+        const savedData = localStorage.getItem("recommendations_data")
         if (savedData) {
           try {
             const data = JSON.parse(savedData)
-            const foundProperty = data.properties?.find(
-              (p: Property) => p.property_id === Number(id)
-            )
+            const foundProperty = data.properties?.find((p: Property) => p.property_id === Number(id))
 
             if (foundProperty) {
               console.log("[v0] Property data from localStorage:", foundProperty)
               setProperty(foundProperty)
               await fetchMap(foundProperty)
-              setLoading(false)
-              return
             }
           } catch (parseErr) {
             console.error("[v0] Error parsing localStorage data:", parseErr)
           }
         }
-
 
         console.log("[v0] Fetching property from API, id:", id)
         const response = await api.getPropertyDetail(Number(id))
@@ -86,13 +126,9 @@ export default function RentDetailPage() {
         } else {
           throw new Error("Property not found")
         }
-
       } catch (err: any) {
         console.error("[v0] Error fetching property:", err)
-        setError(
-          err.message ||
-          "Failed to load property details. Please try again or return to recommendations."
-        )
+        setError(err.message || "Failed to load property details. Please try again or return to recommendations.")
       } finally {
         setLoading(false)
       }
@@ -100,7 +136,6 @@ export default function RentDetailPage() {
 
     const fetchMap = async (propertyData: Property) => {
       try {
-
         const lat = String(propertyData.latitude)
         const lng = String(propertyData.longitude)
 
@@ -109,15 +144,10 @@ export default function RentDetailPage() {
           lat,
           lng,
           latType: typeof lat,
-          lngType: typeof lng
+          lngType: typeof lng,
         })
 
-
-        const mapResponse = await api.getPropertyMap(
-          propertyData.property_id,
-          lat,
-          lng
-        )
+        const mapResponse = await api.getPropertyMap(propertyData.property_id, lat, lng)
 
         if (mapResponse.data && mapResponse.data.html) {
           console.log("[v0] Map HTML received successfully")
@@ -130,7 +160,7 @@ export default function RentDetailPage() {
         console.error("[v0] Error fetching map HTML:", {
           message: mapErr.message,
           status: mapErr.response?.status,
-          data: mapErr.response?.data
+          data: mapErr.response?.data,
         })
         setMapHtml(FALLBACK_MAP_HTML)
       }
@@ -140,6 +170,13 @@ export default function RentDetailPage() {
       fetchPropertyData()
     }
   }, [id])
+
+  const handleFavoriteClick = () => {
+    if (!property) return
+    const newFavoriteStatus = toggleFavorite(property.property_id)
+    setIsFavorited(newFavoriteStatus)
+    trackFavourite(property.property_id, newFavoriteStatus)
+  }
 
   if (loading) {
     return (
@@ -200,6 +237,18 @@ export default function RentDetailPage() {
                     {property.facility_type}
                   </Badge>
                 )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-4 left-4 bg-white/90 hover:bg-white backdrop-blur-sm h-12 w-12"
+                  onClick={handleFavoriteClick}
+                >
+                  <Heart
+                    className={`h-6 w-6 transition-colors ${
+                      isFavorited ? "fill-red-500 text-red-500" : "text-gray-600"
+                    }`}
+                  />
+                </Button>
               </div>
             </Card>
 
@@ -346,8 +395,17 @@ export default function RentDetailPage() {
                 <Separator />
                 <div className="space-y-3">
                   <Button
-                    variant="outline"
+                    variant={isFavorited ? "default" : "outline"}
                     className="w-full"
+                    size="lg"
+                    onClick={handleFavoriteClick}
+                  >
+                    <Heart className={`h-4 w-4 mr-2 ${isFavorited ? "fill-current" : ""}`} />
+                    {isFavorited ? "Favorited" : "Add to Favorites"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent"
                     size="lg"
                     onClick={() => window.open("https://www.propertyguru.com.sg/property-for-rent", "_blank")}
                   >
@@ -359,7 +417,6 @@ export default function RentDetailPage() {
                     className="w-full bg-transparent"
                     size="lg"
                     onClick={() => {
-
                       const lat = String(property.latitude)
                       const lng = String(property.longitude)
                       window.open(`/map/${property.property_id}?lat=${lat}&lng=${lng}`, "_blank")
@@ -368,7 +425,6 @@ export default function RentDetailPage() {
                     <MapPin className="h-4 w-4 mr-2" />
                     View Map in New Window
                   </Button>
-
                 </div>
               </CardContent>
             </Card>
