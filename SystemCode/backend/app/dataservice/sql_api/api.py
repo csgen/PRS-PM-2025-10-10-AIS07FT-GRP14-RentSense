@@ -5,15 +5,19 @@ import time
 
 async def fetch_recommend_properties_async(params: RequestInfo) -> list[ResultInfo]:
     '''异步算法接口，根据请求参数返回初步过滤结果及信息'''
-    housings = await query_housing_data_async(params)
-    print(f'第一步得到{len(housings)}条符合条件的房源，开始处理...')
-
     start_time = time.time()
+    housings = await query_housing_data_async(params)
+    first_end_time = time.time()
+    first_execution_time = first_end_time - start_time
+
+    print(f'第一步得到{len(housings)}条符合条件的房源，执行时间：{first_execution_time:.2f} 秒，开始第二步处理...')
 
     results = await filter_housing_async(housings, params)
 
-    execution_time = time.time() - start_time
+    execution_time = time.time() - first_end_time
     print(f'第二步 filter_housing_async 执行时间: {execution_time:.2f} 秒')
+    # for r in results:
+    #     print(r.model_dump_json())
     
     return results
 

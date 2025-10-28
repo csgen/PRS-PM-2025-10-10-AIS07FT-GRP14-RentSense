@@ -1,0 +1,501 @@
+device_id,min_monthly_rent,max_monthly_rent,school_id,target_district_id,max_school_limit,flat_type_preference,max_mrt_distance,importance_rent,importance_location,importance_facility
+device_1,900,1900,5,1,50,,1000,4,5,3
+device_2,1200,2500,5,,,"['Condo', 'Landed', 'Apartment', 'Executive Condo']",,4,3,1
+device_3,1100,2500,6,30,50,"['Apartment', 'Condo']",800,5,3,3
+device_4,1400,2900,6,,,"['Apartment', 'Condo', 'HDB', 'Landed', 'Executive Condo']",,3,3,1
+device_5,900,2400,6,,,"['Landed', 'HDB', 'Condo']",1500,1,1,2
+device_6,1000,2300,4,,40,"['Apartment', 'Landed', 'HDB', 'Condo']",2000,5,1,3
+device_7,800,1900,6,1,50,,,2,5,5
+device_8,1000,1900,3,,,,,5,1,2
+device_9,1200,2300,5,,60,"['Apartment', 'HDB', 'Landed', 'Condo']",,2,2,2
+device_10,1400,2600,4,15,,"['Executive Condo', 'Condo', 'Landed']",600,4,4,4
+device_11,800,1600,4,,,,,2,1,3
+device_12,1000,1800,5,22,20,"['HDB', 'Landed', 'Apartment']",,1,2,4
+device_13,1300,2400,5,16,30,"['HDB', 'Condo', 'Executive Condo', 'Landed']",1500,5,3,1
+device_14,1100,2000,1,,,['Condo'],,4,2,3
+device_15,1400,2200,2,31,50,"['HDB', 'Landed', 'Executive Condo', 'Condo']",,1,5,1
+device_16,1300,2400,2,10,20,,,1,2,3
+device_17,1400,2600,5,15,40,,2000,4,5,5
+device_18,900,2300,1,28,50,"['HDB', 'Apartment', 'Condo']",,2,4,2
+device_19,1400,2800,2,30,40,"['Apartment', 'HDB', 'Landed', 'Executive Condo']",,5,3,4
+device_20,1200,2300,1,,,"['HDB', 'Condo', 'Apartment', 'Landed']",500,1,2,5
+device_21,1500,2600,4,,40,"['Apartment', 'Executive Condo']",,4,4,4
+device_22,1400,2600,3,,20,"['HDB', 'Condo', 'Executive Condo', 'Landed', 'Apartment']",,5,3,1
+device_23,1500,2500,2,10,20,"['HDB', 'Executive Condo', 'Landed', 'Apartment', 'Condo']",1500,2,2,1
+device_24,900,2300,2,19,50,"['Executive Condo', 'Apartment']",,4,5,5
+device_25,1500,2600,6,9,40,,,1,5,2
+device_26,1100,2500,1,,50,"['Landed', 'Condo']",1000,5,3,2
+device_27,1400,2600,3,,,"['Apartment', 'Executive Condo', 'HDB', 'Landed', 'Condo']",600,2,2,5
+device_28,1100,2100,4,,,"['Executive Condo', 'Apartment', 'HDB', 'Condo']",,1,5,4
+device_29,1100,1900,5,9,30,['Executive Condo'],,4,3,2
+device_30,1500,3000,1,17,50,['Condo'],,3,3,5
+device_31,1500,2700,3,11,,['Condo'],500,2,4,4
+device_32,1300,2600,2,,,"['Executive Condo', 'Condo', 'Apartment', 'Landed', 'HDB']",1500,5,5,3
+device_33,1100,2100,3,22,,,,3,1,4
+device_34,1400,2800,5,,50,"['Executive Condo', 'Condo', 'HDB']",,1,3,2
+device_35,1200,2700,3,,,"['HDB', 'Condo', 'Apartment']",800,3,1,1
+device_36,1200,2500,2,14,,['Condo'],800,4,5,3
+device_37,1400,2900,3,,40,['Condo'],,1,2,3
+device_38,1500,3000,1,,60,"['Executive Condo', 'Landed', 'Apartment']",,4,5,5
+device_39,800,2100,3,8,,"['HDB', 'Apartment', 'Landed', 'Executive Condo']",800,3,5,3
+device_40,900,2300,3,13,30,['Executive Condo'],,3,5,4
+device_41,900,1800,3,,20,['HDB'],,4,4,5
+device_42,1200,2600,6,1,20,['HDB'],600,1,4,5
+device_43,1400,2600,5,,,['Landed'],500,2,4,1
+device_44,800,1600,3,11,,,2000,5,2,4
+device_45,900,2400,3,,,,1500,1,2,3
+device_46,1500,2600,6,,,,1000,4,4,2
+device_47,1100,2300,1,,,"['HDB', 'Condo', 'Landed']",1500,3,2,5
+device_48,1300,2100,4,,,['Landed'],2000,5,3,2
+device_49,1100,2600,1,2,,['Condo'],600,5,5,5
+device_50,1000,1800,6,7,,,,4,5,3
+device_51,1100,2300,3,,,"['Condo', 'Executive Condo', 'HDB', 'Apartment', 'Landed']",,5,3,1
+device_52,1200,2100,3,4,40,"['Executive Condo', 'Landed', 'Condo', 'HDB']",600,1,4,3
+device_53,1300,2500,2,,20,"['Landed', 'HDB', 'Executive Condo', 'Condo', 'Apartment']",2000,4,5,5
+device_54,1200,2100,4,,,"['HDB', 'Condo', 'Executive Condo', 'Landed']",500,3,5,2
+device_55,1000,2100,6,33,40,"['HDB', 'Apartment', 'Landed', 'Condo', 'Executive Condo']",600,1,1,3
+device_56,1300,2200,6,,,"['Executive Condo', 'Landed', 'HDB', 'Apartment']",1000,5,2,1
+device_57,1400,2700,6,,50,"['Landed', 'Apartment', 'HDB', 'Condo']",,4,5,1
+device_58,1100,2500,2,,20,['Apartment'],800,5,4,4
+device_59,1500,2900,2,,60,,600,1,5,3
+device_60,800,2000,2,,50,['Condo'],,3,5,4
+device_61,1500,2900,4,,,"['Apartment', 'HDB', 'Executive Condo']",2000,5,1,3
+device_62,1300,2800,2,25,,"['Apartment', 'Condo']",2000,5,2,1
+device_63,1000,1800,2,,,"['HDB', 'Executive Condo', 'Condo', 'Apartment']",,5,3,1
+device_64,1300,2200,1,,,"['HDB', 'Condo']",,5,2,4
+device_65,900,1700,1,18,,"['Condo', 'Landed']",1500,3,3,5
+device_66,1000,2100,6,,,"['Landed', 'Executive Condo', 'HDB', 'Condo']",1500,5,5,3
+device_67,1500,2400,3,,,['Landed'],1500,4,5,3
+device_68,800,2300,3,,,"['Apartment', 'Condo', 'HDB', 'Landed', 'Executive Condo']",2000,3,2,5
+device_69,900,2200,3,24,20,,,2,2,2
+device_70,1400,2700,2,,,"['HDB', 'Executive Condo', 'Condo', 'Landed', 'Apartment']",2000,5,4,1
+device_71,1200,2000,5,25,50,"['HDB', 'Executive Condo', 'Apartment', 'Landed']",1500,1,2,5
+device_72,1400,2200,2,,50,"['HDB', 'Landed', 'Condo', 'Apartment', 'Executive Condo']",,1,3,1
+device_73,1500,2700,2,,30,"['HDB', 'Landed', 'Condo', 'Apartment', 'Executive Condo']",,4,5,5
+device_74,800,2000,2,22,50,,500,2,5,4
+device_75,800,1700,3,5,,"['Apartment', 'Executive Condo', 'Condo', 'Landed', 'HDB']",1000,2,2,1
+device_76,1000,2100,3,,,['Executive Condo'],,2,4,2
+device_77,1100,2600,2,,,['HDB'],600,5,1,4
+device_78,1300,2100,3,23,,"['Landed', 'Apartment']",,2,4,2
+device_79,1000,2400,2,,20,"['Landed', 'Executive Condo', 'Apartment', 'Condo', 'HDB']",,3,5,5
+device_80,1400,2900,2,,,"['Apartment', 'Condo']",,2,4,3
+device_81,1200,2600,2,10,,"['Condo', 'Apartment']",,1,5,3
+device_82,900,2100,2,,,['Executive Condo'],2000,3,1,4
+device_83,800,1800,1,,60,,,1,2,4
+device_84,1000,2400,6,,,"['Apartment', 'Executive Condo']",,1,2,5
+device_85,900,1800,5,1,,['Executive Condo'],500,4,5,1
+device_86,1300,2200,2,,60,"['HDB', 'Landed', 'Condo']",1000,5,2,2
+device_87,800,2200,2,29,,"['Landed', 'Apartment']",,2,1,1
+device_88,1300,2800,1,25,40,"['Apartment', 'Landed']",,3,1,1
+device_89,1200,2700,2,36,,"['Executive Condo', 'Condo', 'Apartment', 'HDB', 'Landed']",800,5,1,5
+device_90,1300,2300,3,31,20,"['Executive Condo', 'HDB']",1500,4,5,3
+device_91,1200,2100,4,,50,['HDB'],1500,5,4,1
+device_92,1400,2600,2,,60,"['Landed', 'HDB', 'Condo', 'Apartment']",600,2,1,2
+device_93,800,2100,1,8,,"['Apartment', 'Condo', 'Landed', 'Executive Condo']",600,4,1,2
+device_94,1400,2500,5,,,,,4,3,2
+device_95,1100,2100,2,,,"['Landed', 'Executive Condo', 'HDB', 'Apartment', 'Condo']",,1,3,4
+device_96,1400,2800,3,,,"['Executive Condo', 'Apartment', 'HDB', 'Condo', 'Landed']",1500,5,4,5
+device_97,1200,2200,3,,,['Landed'],500,5,3,2
+device_98,1300,2100,2,8,50,"['Condo', 'HDB', 'Executive Condo', 'Apartment']",600,1,2,4
+device_99,1000,2300,3,22,20,"['Apartment', 'Executive Condo', 'Condo', 'HDB', 'Landed']",,2,3,5
+device_100,1400,2500,3,36,,"['Executive Condo', 'Landed', 'Condo']",,1,4,3
+device_101,1000,1900,2,,60,"['HDB', 'Condo']",,3,2,5
+device_102,1100,1900,4,,,['HDB'],,3,3,2
+device_103,1200,2000,6,16,50,"['Condo', 'Apartment']",,2,3,5
+device_104,800,2100,4,,20,"['Executive Condo', 'Condo', 'HDB']",500,4,2,4
+device_105,1100,2600,4,29,50,,,1,5,4
+device_106,1300,2800,3,,20,"['Condo', 'Landed', 'Apartment']",600,3,4,1
+device_107,1000,2300,1,24,,,,1,2,2
+device_108,900,1900,5,32,,"['Apartment', 'Condo', 'Executive Condo']",800,1,1,1
+device_109,1100,2400,6,,40,,,5,3,3
+device_110,1300,2100,5,32,40,"['Apartment', 'Condo', 'HDB', 'Landed', 'Executive Condo']",,2,3,4
+device_111,1100,2000,4,,50,"['HDB', 'Executive Condo', 'Landed', 'Condo', 'Apartment']",,3,2,2
+device_112,1100,2500,2,,,,1000,2,1,1
+device_113,1400,2600,6,25,50,,,4,1,5
+device_114,1500,2700,2,3,,"['Landed', 'HDB', 'Executive Condo', 'Condo', 'Apartment']",,1,1,2
+device_115,800,1600,6,3,,"['Condo', 'HDB', 'Apartment', 'Executive Condo']",800,1,4,1
+device_116,1500,2300,4,,50,"['Condo', 'Executive Condo', 'Apartment', 'HDB']",,1,2,1
+device_117,1500,3000,1,,20,"['Condo', 'Apartment', 'HDB', 'Landed']",1500,1,3,4
+device_118,800,1900,3,,50,"['Landed', 'Condo', 'Apartment', 'HDB']",500,4,5,5
+device_119,1200,2100,6,18,40,"['Condo', 'Landed', 'Executive Condo']",500,2,5,5
+device_120,1500,2400,3,31,,"['Apartment', 'HDB', 'Landed']",500,3,1,2
+device_121,900,1700,2,4,,"['Condo', 'Landed', 'Executive Condo', 'Apartment']",500,5,3,4
+device_122,900,1700,6,,,"['Landed', 'Apartment', 'Executive Condo', 'Condo']",,4,3,1
+device_123,1000,2100,3,29,,"['Landed', 'HDB']",600,2,5,1
+device_124,1000,1900,5,8,,"['Apartment', 'Landed']",800,5,3,2
+device_125,1000,2200,5,4,30,,,1,5,1
+device_126,1200,2500,3,8,30,,,4,4,2
+device_127,1000,2200,4,28,,['Executive Condo'],800,5,5,3
+device_128,1200,2300,5,5,20,['Landed'],,2,3,4
+device_129,1500,2300,6,,40,"['Executive Condo', 'Landed', 'Apartment', 'HDB', 'Condo']",1000,1,5,1
+device_130,800,1600,2,3,,['Executive Condo'],,1,4,5
+device_131,1400,2700,6,,30,"['Landed', 'Condo', 'HDB', 'Executive Condo', 'Apartment']",,1,2,5
+device_132,1500,2500,4,,60,"['HDB', 'Condo', 'Apartment', 'Executive Condo']",500,3,5,5
+device_133,1200,2500,2,,,"['Apartment', 'HDB', 'Condo', 'Executive Condo']",1500,2,5,3
+device_134,800,1900,1,,20,"['HDB', 'Landed', 'Executive Condo']",,3,4,3
+device_135,900,2400,4,9,60,['Executive Condo'],800,3,2,4
+device_136,900,1900,5,,30,"['HDB', 'Executive Condo', 'Condo']",,2,5,3
+device_137,1500,2700,4,,,,,4,1,3
+device_138,1100,2200,2,,,,2000,4,1,1
+device_139,1500,2600,4,30,,"['Executive Condo', 'Apartment', 'Condo', 'HDB']",,2,3,3
+device_140,1500,2600,1,1,,"['HDB', 'Condo', 'Executive Condo', 'Landed']",,1,4,1
+device_141,1000,2300,1,8,20,"['Apartment', 'Landed', 'Condo']",,3,2,2
+device_142,1100,2300,6,19,,"['Landed', 'Apartment', 'Executive Condo', 'HDB', 'Condo']",800,4,5,5
+device_143,1000,2500,5,,,,,2,1,2
+device_144,1100,1900,5,,,['HDB'],2000,3,2,5
+device_145,1200,2500,3,,,['Landed'],800,4,4,5
+device_146,1300,2700,1,5,20,,,4,1,3
+device_147,1500,2700,3,5,,['Executive Condo'],,1,3,4
+device_148,800,1800,1,,,"['Condo', 'HDB']",,2,2,5
+device_149,1200,2600,6,,,"['Apartment', 'Landed']",,4,5,5
+device_150,1400,2800,2,13,,,,2,1,5
+device_151,1500,2600,1,8,,"['Apartment', 'Condo', 'Landed', 'Executive Condo', 'HDB']",,3,5,2
+device_152,1300,2400,2,,40,"['Apartment', 'Executive Condo', 'HDB']",800,2,2,5
+device_153,1500,3000,5,,,"['Executive Condo', 'Landed']",1500,1,2,5
+device_154,900,2100,6,,,,500,1,1,3
+device_155,900,2200,4,18,,"['Executive Condo', 'HDB', 'Landed']",800,1,2,1
+device_156,900,1800,1,,50,,2000,5,3,4
+device_157,1400,2500,3,13,,"['Apartment', 'Condo']",600,1,3,1
+device_158,1100,2200,3,,40,,2000,5,2,5
+device_159,1200,2400,5,,30,"['Landed', 'Executive Condo', 'HDB', 'Apartment', 'Condo']",,4,4,4
+device_160,1500,2400,2,,,,500,5,3,3
+device_161,1400,2400,1,,,"['Condo', 'Landed']",,1,2,4
+device_162,1100,2400,4,33,,,1000,1,1,4
+device_163,1300,2800,1,8,,"['Landed', 'Condo', 'Apartment']",600,2,1,1
+device_164,1000,1800,4,2,,"['Condo', 'Apartment', 'Executive Condo', 'HDB', 'Landed']",,2,5,4
+device_165,1500,2900,6,19,,['Landed'],,4,3,1
+device_166,1000,2400,5,,50,"['Executive Condo', 'Condo', 'HDB', 'Apartment', 'Landed']",1000,2,1,4
+device_167,900,2300,6,,20,['Landed'],,3,3,3
+device_168,900,1900,1,27,,,,3,4,4
+device_169,1000,2100,3,,,['HDB'],1500,2,3,5
+device_170,900,2200,2,,,"['Executive Condo', 'Apartment']",,4,5,2
+device_171,800,2300,6,,,"['Executive Condo', 'Apartment', 'Landed']",1000,2,4,5
+device_172,900,2100,2,32,30,['Apartment'],,3,1,3
+device_173,1300,2600,4,21,,['Executive Condo'],,5,1,5
+device_174,1100,1900,5,,20,['Landed'],,5,4,3
+device_175,800,1900,3,,20,['Condo'],800,4,2,5
+device_176,1400,2200,5,34,50,"['Executive Condo', 'Apartment', 'HDB']",,4,1,4
+device_177,1200,2600,1,23,,"['Executive Condo', 'Apartment', 'Landed', 'Condo']",800,1,4,3
+device_178,1000,2100,3,,20,"['Executive Condo', 'Condo', 'HDB', 'Landed']",,4,1,4
+device_179,1400,2700,4,25,,"['Executive Condo', 'Landed']",500,3,4,4
+device_180,900,2200,1,27,50,"['Landed', 'Condo', 'Executive Condo', 'HDB']",500,4,4,1
+device_181,1200,2100,2,34,60,"['Condo', 'HDB']",,5,5,4
+device_182,800,2200,1,,,,1000,2,5,1
+device_183,1000,2400,1,1,50,,800,3,5,3
+device_184,1500,2600,3,,,"['Executive Condo', 'HDB', 'Apartment', 'Condo', 'Landed']",,4,5,2
+device_185,800,1900,1,18,50,"['Executive Condo', 'HDB']",,1,3,3
+device_186,1100,1900,4,,,['Apartment'],,4,2,2
+device_187,1000,1800,6,25,30,"['Landed', 'HDB']",,4,5,1
+device_188,1000,1800,1,,,"['HDB', 'Condo', 'Landed']",600,2,3,4
+device_189,1500,2900,4,,,"['Apartment', 'Condo', 'Executive Condo', 'Landed']",,3,5,2
+device_190,1500,2400,4,,30,"['Landed', 'Condo', 'Executive Condo']",2000,3,1,4
+device_191,900,2300,6,,,['Executive Condo'],,3,1,4
+device_192,1200,2500,1,,50,"['Executive Condo', 'HDB', 'Landed', 'Condo', 'Apartment']",1000,3,5,5
+device_193,1400,2700,5,26,30,"['Landed', 'Condo']",,3,1,2
+device_194,1200,2700,6,,50,"['Apartment', 'HDB']",800,1,3,1
+device_195,1000,2100,3,,60,"['Landed', 'Apartment', 'Executive Condo', 'HDB']",,3,4,5
+device_196,1400,2500,4,17,,,800,3,2,5
+device_197,800,2300,6,30,50,"['HDB', 'Condo']",,3,3,4
+device_198,1200,2700,2,,,"['HDB', 'Apartment']",,1,5,5
+device_199,900,2000,2,21,40,['HDB'],800,2,5,3
+device_200,1400,2500,1,,60,['Apartment'],,3,5,2
+device_201,1200,2300,1,29,60,"['Executive Condo', 'Condo', 'Landed', 'HDB', 'Apartment']",,2,5,3
+device_202,1300,2700,1,,60,['Condo'],,3,4,3
+device_203,1100,2000,1,5,,"['Executive Condo', 'Landed', 'Condo']",,3,3,1
+device_204,900,1700,1,,,,,5,1,2
+device_205,900,2000,6,21,30,"['Condo', 'Executive Condo', 'Landed']",500,5,3,3
+device_206,1200,2100,6,,,"['Executive Condo', 'Apartment']",,4,4,5
+device_207,1100,1900,5,13,20,"['Condo', 'Landed']",,5,2,4
+device_208,1300,2700,1,26,,"['Executive Condo', 'Landed', 'Condo']",,5,1,3
+device_209,1300,2400,2,,,,,2,2,4
+device_210,1500,2500,1,,40,"['HDB', 'Executive Condo']",,4,3,4
+device_211,1100,2500,6,10,,"['Apartment', 'Landed', 'HDB', 'Condo']",600,5,2,1
+device_212,1100,2100,2,,,"['Condo', 'Apartment']",,5,1,2
+device_213,800,1700,2,5,,"['Landed', 'Condo', 'Executive Condo']",1500,5,5,1
+device_214,1300,2300,3,33,60,"['Condo', 'Apartment', 'Executive Condo', 'HDB', 'Landed']",1500,5,2,1
+device_215,1100,2400,4,,,"['Apartment', 'Condo', 'HDB', 'Landed', 'Executive Condo']",1000,4,2,5
+device_216,1400,2600,6,9,60,,,2,3,2
+device_217,800,1800,1,,20,"['Executive Condo', 'Condo', 'Landed', 'Apartment']",,2,3,2
+device_218,1400,2700,1,1,50,"['Condo', 'Landed', 'HDB', 'Apartment', 'Executive Condo']",,2,4,1
+device_219,1300,2300,4,,30,"['Apartment', 'Landed', 'Executive Condo', 'HDB']",,4,3,5
+device_220,1500,3000,2,28,,"['Apartment', 'Condo', 'HDB']",,1,3,5
+device_221,900,2000,4,19,,['Condo'],800,3,4,4
+device_222,800,1900,1,30,,"['Executive Condo', 'Landed', 'Condo']",1000,1,4,3
+device_223,800,1900,6,9,30,"['Executive Condo', 'Landed', 'Condo', 'Apartment', 'HDB']",2000,5,5,1
+device_224,1200,2300,3,23,20,"['Apartment', 'Landed', 'HDB', 'Executive Condo']",,2,5,3
+device_225,1000,1800,4,9,50,['Landed'],500,3,1,4
+device_226,900,1900,5,,20,['Executive Condo'],500,1,1,5
+device_227,1000,2400,3,22,50,"['Executive Condo', 'HDB', 'Apartment', 'Landed']",2000,5,1,2
+device_228,1200,2700,5,12,,"['Landed', 'HDB', 'Condo', 'Apartment', 'Executive Condo']",1000,2,3,3
+device_229,1400,2300,2,,,,500,5,4,3
+device_230,1100,2000,4,32,60,"['Executive Condo', 'HDB', 'Condo', 'Apartment', 'Landed']",800,5,5,4
+device_231,1100,2400,3,,50,['Condo'],,2,3,5
+device_232,1000,2000,6,14,20,"['Apartment', 'Condo', 'HDB']",500,5,1,3
+device_233,800,1700,6,,20,"['Executive Condo', 'HDB', 'Landed', 'Apartment', 'Condo']",,3,2,3
+device_234,1400,2700,3,30,,"['Apartment', 'Executive Condo']",,1,1,1
+device_235,1500,3000,6,,20,['HDB'],600,5,3,1
+device_236,800,2000,4,,,,,5,3,3
+device_237,1100,1900,4,10,50,"['HDB', 'Condo']",2000,5,1,1
+device_238,900,2200,2,,40,"['Condo', 'Landed', 'Executive Condo', 'Apartment', 'HDB']",800,2,1,5
+device_239,1400,2800,2,14,40,"['Landed', 'Condo', 'Apartment']",1000,5,1,5
+device_240,900,1700,5,3,,,,3,1,2
+device_241,1000,2300,5,,50,,1000,2,1,3
+device_242,1000,2300,6,,20,"['Landed', 'Apartment', 'Condo', 'Executive Condo']",,2,2,5
+device_243,1300,2500,5,30,30,"['Condo', 'Landed', 'Apartment', 'HDB', 'Executive Condo']",800,1,3,4
+device_244,1400,2600,1,10,,"['Executive Condo', 'Apartment', 'Condo', 'HDB', 'Landed']",,3,3,3
+device_245,800,1900,6,14,,['HDB'],,1,1,5
+device_246,1100,2300,1,,,,,4,4,1
+device_247,1500,2500,1,,,"['Apartment', 'Executive Condo', 'Landed', 'HDB', 'Condo']",2000,4,4,5
+device_248,800,1700,1,,50,"['Condo', 'Apartment', 'Landed', 'HDB']",,1,3,1
+device_249,1500,2300,4,,30,"['Condo', 'HDB', 'Landed', 'Apartment', 'Executive Condo']",,5,3,3
+device_250,1100,2500,6,5,20,['HDB'],,1,2,3
+device_251,1500,2300,5,,,"['Apartment', 'Landed', 'Executive Condo']",,4,2,1
+device_252,800,1700,3,,50,"['HDB', 'Landed', 'Condo', 'Executive Condo']",,3,3,4
+device_253,1400,2600,6,,,,,1,5,4
+device_254,1400,2500,2,,,['HDB'],600,3,1,5
+device_255,900,2200,1,21,50,"['Executive Condo', 'Landed', 'Condo', 'Apartment']",600,2,3,1
+device_256,1200,2500,3,,,"['Condo', 'Executive Condo', 'HDB', 'Apartment', 'Landed']",,4,2,5
+device_257,1400,2200,5,6,50,"['Condo', 'Apartment', 'HDB']",,5,1,1
+device_258,1400,2300,5,,,,,3,3,4
+device_259,1200,2700,6,20,,,800,3,2,2
+device_260,800,2300,5,2,,"['Landed', 'Condo', 'Apartment', 'HDB']",,3,4,4
+device_261,1500,2300,1,,,['Condo'],500,1,4,4
+device_262,1200,2000,1,,60,['HDB'],,2,5,5
+device_263,1100,2400,4,1,,,,5,2,1
+device_264,1300,2200,2,,,"['HDB', 'Apartment', 'Executive Condo', 'Condo']",,4,2,1
+device_265,1500,2500,6,,,,,4,2,1
+device_266,1300,2200,5,,40,"['Apartment', 'Condo']",2000,2,1,5
+device_267,800,2300,5,,50,"['Executive Condo', 'Landed', 'Apartment', 'Condo']",1500,5,1,2
+device_268,1300,2600,3,30,60,"['Landed', 'Apartment', 'HDB']",800,3,2,3
+device_269,1300,2100,2,8,,['Condo'],,4,1,5
+device_270,1000,2500,1,,,"['HDB', 'Landed']",,2,5,1
+device_271,1000,2500,3,36,,['Condo'],500,3,4,1
+device_272,1300,2300,4,34,,"['Condo', 'Apartment', 'Executive Condo', 'HDB', 'Landed']",1500,2,5,3
+device_273,1500,2800,1,26,,"['Condo', 'HDB', 'Apartment', 'Landed']",,3,3,1
+device_274,1400,2800,1,5,,"['Executive Condo', 'Apartment', 'Condo', 'HDB', 'Landed']",800,1,2,2
+device_275,1400,2400,2,10,,"['Executive Condo', 'Landed']",1000,4,5,2
+device_276,1000,2500,5,24,,"['Executive Condo', 'Landed', 'HDB', 'Condo', 'Apartment']",800,1,5,5
+device_277,1200,2100,5,,20,"['Executive Condo', 'Landed', 'Condo', 'Apartment']",,1,1,2
+device_278,1000,2100,2,17,,['Landed'],600,4,1,4
+device_279,1500,3000,6,,,,1500,5,3,3
+device_280,1100,2300,6,,60,"['HDB', 'Landed', 'Executive Condo', 'Condo']",800,1,1,4
+device_281,1500,3000,3,,,"['Condo', 'Landed', 'Apartment']",500,3,3,3
+device_282,800,2200,2,,,"['Condo', 'Landed']",1500,5,3,3
+device_283,1300,2300,2,,30,"['Apartment', 'Executive Condo', 'Landed']",800,4,2,4
+device_284,1300,2600,5,,,"['Condo', 'Executive Condo', 'Apartment']",,1,4,1
+device_285,1000,1800,2,11,,,500,1,1,2
+device_286,800,2100,1,18,,,2000,5,5,5
+device_287,1500,2900,2,22,,['HDB'],2000,5,3,5
+device_288,900,2400,5,6,30,,,1,5,5
+device_289,1100,2300,5,,50,['HDB'],600,5,2,4
+device_290,1300,2600,6,23,,"['Landed', 'Executive Condo', 'HDB']",1500,2,4,2
+device_291,1500,2500,3,7,,"['Landed', 'Executive Condo', 'HDB', 'Apartment', 'Condo']",,5,4,3
+device_292,900,2000,5,,30,"['Executive Condo', 'HDB', 'Apartment', 'Landed', 'Condo']",,2,5,4
+device_293,1300,2200,6,34,,"['Executive Condo', 'Landed', 'Apartment']",1500,2,1,4
+device_294,1500,2600,4,,,"['HDB', 'Apartment', 'Condo', 'Landed']",,1,3,4
+device_295,1500,2800,3,,,"['Landed', 'Apartment']",2000,4,5,4
+device_296,1400,2700,2,,20,['Landed'],,5,4,4
+device_297,1000,1900,3,6,60,"['HDB', 'Executive Condo', 'Condo', 'Landed', 'Apartment']",1500,4,4,2
+device_298,1300,2800,5,,40,['Executive Condo'],2000,4,3,3
+device_299,800,2100,4,5,60,,,1,4,1
+device_300,1100,2100,6,25,,"['HDB', 'Executive Condo', 'Condo', 'Apartment', 'Landed']",1500,1,5,4
+device_301,1000,1900,2,,60,"['Apartment', 'Condo']",,5,4,1
+device_302,1000,2400,2,,,,800,1,5,4
+device_303,1400,2400,4,2,20,"['Executive Condo', 'Condo', 'Apartment']",,2,2,1
+device_304,900,1900,5,24,,['HDB'],,1,2,3
+device_305,1000,2000,6,22,,['Apartment'],,1,1,4
+device_306,1500,3000,1,9,,"['Landed', 'Apartment', 'Condo']",1000,1,1,3
+device_307,900,2300,2,,,"['Executive Condo', 'Landed', 'HDB', 'Condo', 'Apartment']",,2,5,1
+device_308,1300,2100,5,,,"['Landed', 'Condo', 'Executive Condo']",,5,3,3
+device_309,1500,2700,1,16,60,"['HDB', 'Apartment', 'Condo']",800,2,4,1
+device_310,1400,2700,4,,,"['HDB', 'Condo', 'Executive Condo', 'Apartment']",,2,3,5
+device_311,800,2100,2,,,"['Condo', 'HDB', 'Executive Condo', 'Apartment']",,3,5,4
+device_312,1500,2600,1,18,,,800,1,3,1
+device_313,1000,1800,6,15,,['Executive Condo'],,2,4,1
+device_314,900,1700,5,11,,,,4,1,2
+device_315,900,2400,2,,20,"['Condo', 'Executive Condo', 'HDB', 'Apartment']",1000,4,4,2
+device_316,800,1900,4,13,30,"['Landed', 'Condo', 'Executive Condo']",,3,5,1
+device_317,800,2100,1,,,['Landed'],600,5,4,4
+device_318,900,2100,6,2,,,1500,4,3,5
+device_319,1400,2500,4,13,,['Apartment'],1000,4,3,3
+device_320,1000,1800,1,3,30,,,3,1,4
+device_321,900,1800,3,5,,"['Apartment', 'Condo']",1500,5,5,1
+device_322,1400,2900,5,33,,"['Landed', 'Apartment', 'HDB', 'Condo', 'Executive Condo']",,4,3,1
+device_323,1200,2400,6,12,30,"['Condo', 'Executive Condo', 'HDB']",,3,5,5
+device_324,1200,2200,6,,30,"['Condo', 'Apartment']",,4,5,5
+device_325,1300,2200,2,,20,,,3,1,3
+device_326,800,2300,3,2,40,"['Executive Condo', 'HDB', 'Condo', 'Landed']",,3,5,4
+device_327,1300,2800,4,34,,"['Landed', 'Executive Condo', 'HDB', 'Apartment']",,3,4,2
+device_328,1400,2200,4,34,,"['Condo', 'Apartment', 'Executive Condo', 'HDB', 'Landed']",600,4,4,3
+device_329,1300,2500,1,,60,"['HDB', 'Landed']",2000,1,2,1
+device_330,1400,2800,1,,40,,600,3,5,4
+device_331,1300,2400,5,,,['Executive Condo'],,4,4,2
+device_332,1400,2800,4,,,,1500,5,5,4
+device_333,1100,2600,6,,,['HDB'],1000,5,1,1
+device_334,1400,2600,5,,60,"['Apartment', 'Landed', 'HDB']",1500,5,2,2
+device_335,1100,2400,1,,50,"['Landed', 'Apartment', 'Executive Condo']",2000,1,4,4
+device_336,1300,2800,6,,20,['Apartment'],,2,3,5
+device_337,1100,2300,2,28,40,"['Executive Condo', 'HDB', 'Apartment']",,4,1,5
+device_338,1400,2200,1,19,,"['Condo', 'Landed', 'Executive Condo']",1500,4,1,4
+device_339,1100,2600,6,9,50,,,2,5,3
+device_340,900,2200,5,7,60,"['Landed', 'Apartment', 'Condo', 'Executive Condo', 'HDB']",,2,1,2
+device_341,1000,2000,6,4,20,"['Landed', 'Condo', 'Executive Condo']",,3,4,3
+device_342,1400,2700,1,31,,"['Condo', 'Apartment', 'Executive Condo', 'HDB']",1500,5,3,5
+device_343,1500,2500,6,,20,"['Executive Condo', 'Apartment']",,3,3,4
+device_344,900,2000,1,15,50,"['Apartment', 'HDB']",600,3,1,3
+device_345,1300,2800,1,,,['Landed'],,3,5,1
+device_346,1200,2100,2,,60,"['Landed', 'Apartment', 'Condo', 'HDB']",600,3,1,2
+device_347,1300,2300,4,26,40,"['Landed', 'Executive Condo', 'Apartment', 'Condo']",,4,4,3
+device_348,1400,2600,5,,,"['Condo', 'HDB', 'Landed', 'Executive Condo']",,4,1,4
+device_349,1000,2100,1,34,40,"['HDB', 'Condo']",,1,4,2
+device_350,900,2100,6,14,,['Landed'],,3,5,1
+device_351,1400,2200,5,9,,['Condo'],,1,2,1
+device_352,1400,2900,4,,,['HDB'],1500,3,1,2
+device_353,1400,2500,1,,,"['Executive Condo', 'Condo', 'HDB', 'Landed', 'Apartment']",800,1,2,1
+device_354,900,2000,4,33,40,,1500,2,1,3
+device_355,900,2200,3,34,,"['Apartment', 'Condo', 'Executive Condo', 'Landed']",,5,1,1
+device_356,1000,1900,6,24,30,['Landed'],,3,2,4
+device_357,1400,2600,2,32,60,"['Apartment', 'HDB']",500,5,4,1
+device_358,1500,2900,1,,50,"['Apartment', 'Executive Condo']",800,3,3,3
+device_359,1500,2800,5,,,['Landed'],,2,5,3
+device_360,1400,2700,3,,20,"['Landed', 'Executive Condo', 'Condo']",2000,3,2,5
+device_361,1000,2400,2,,40,"['Landed', 'Executive Condo', 'HDB', 'Condo']",500,5,2,1
+device_362,1200,2100,4,,30,,,2,2,1
+device_363,1400,2900,3,,40,"['Condo', 'Landed']",1000,1,5,1
+device_364,1400,2600,6,4,40,"['Landed', 'Apartment', 'Condo', 'Executive Condo', 'HDB']",,2,3,2
+device_365,1500,2400,5,,20,"['Executive Condo', 'Condo', 'Landed', 'HDB', 'Apartment']",,3,5,2
+device_366,1300,2800,4,,60,['Condo'],,4,2,5
+device_367,1000,2100,5,12,30,"['Executive Condo', 'Landed', 'HDB']",500,3,1,1
+device_368,900,1900,4,,40,"['Apartment', 'Executive Condo', 'Landed', 'HDB', 'Condo']",1500,5,1,2
+device_369,1500,2500,3,,50,"['Condo', 'HDB', 'Landed']",2000,4,3,2
+device_370,1200,2200,3,,,,1000,3,4,5
+device_371,1200,2400,1,9,30,"['Executive Condo', 'HDB', 'Condo']",,3,4,3
+device_372,1300,2200,5,34,,"['HDB', 'Landed', 'Executive Condo', 'Condo']",,5,1,3
+device_373,1100,2100,4,7,,"['Apartment', 'Executive Condo', 'HDB']",,5,1,5
+device_374,800,1700,1,29,20,,,2,4,2
+device_375,1200,2300,4,29,,['Apartment'],,4,3,2
+device_376,1100,2100,1,,30,"['Condo', 'Executive Condo', 'Apartment', 'Landed']",,3,5,4
+device_377,800,2300,6,6,40,"['Apartment', 'Condo', 'HDB']",800,1,3,4
+device_378,1400,2300,3,9,30,"['Landed', 'Executive Condo', 'Apartment', 'HDB']",600,3,1,1
+device_379,1300,2500,5,,30,"['Apartment', 'HDB', 'Landed', 'Condo', 'Executive Condo']",1500,4,2,4
+device_380,900,2100,2,,,"['HDB', 'Apartment', 'Condo', 'Landed']",,1,4,4
+device_381,1000,2400,1,,50,"['Executive Condo', 'Landed', 'HDB', 'Apartment', 'Condo']",500,1,1,1
+device_382,1200,2400,3,13,40,,1000,4,1,4
+device_383,1000,2200,2,,,"['Condo', 'Apartment', 'HDB', 'Executive Condo', 'Landed']",1000,3,2,4
+device_384,1200,2300,1,,20,"['Condo', 'Landed', 'HDB']",1000,2,5,2
+device_385,1200,2600,4,,40,"['Executive Condo', 'HDB', 'Apartment']",800,5,3,4
+device_386,800,1700,2,34,,"['Landed', 'Executive Condo', 'HDB', 'Apartment']",,1,5,4
+device_387,1300,2700,6,9,,"['HDB', 'Apartment', 'Condo', 'Landed', 'Executive Condo']",,5,2,3
+device_388,1200,2700,2,,20,['Executive Condo'],800,1,5,1
+device_389,800,2300,6,,,['HDB'],1500,3,5,4
+device_390,1100,2200,2,9,40,"['Executive Condo', 'Apartment', 'HDB']",1000,5,1,2
+device_391,900,2400,6,,,"['HDB', 'Apartment', 'Condo']",500,3,3,3
+device_392,1300,2500,6,,30,"['Landed', 'Apartment', 'Executive Condo']",500,4,4,4
+device_393,1400,2900,4,,50,"['Condo', 'Executive Condo', 'HDB']",,4,3,5
+device_394,1000,2400,6,12,60,"['HDB', 'Landed', 'Executive Condo']",800,4,1,4
+device_395,800,1900,3,8,,"['Executive Condo', 'Landed', 'Condo']",,5,5,5
+device_396,800,2200,4,,,['Condo'],1000,2,2,2
+device_397,1200,2700,6,25,,"['HDB', 'Apartment', 'Condo']",800,5,3,3
+device_398,1200,2000,1,,50,['Landed'],1500,1,2,5
+device_399,1200,2300,1,17,20,"['Condo', 'Executive Condo']",800,4,2,5
+device_400,900,2000,4,19,60,"['HDB', 'Condo', 'Landed', 'Executive Condo', 'Apartment']",2000,5,4,2
+device_401,1500,2500,2,,40,"['Apartment', 'Condo', 'Executive Condo', 'HDB', 'Landed']",500,3,4,2
+device_402,800,1700,5,,,"['Apartment', 'Executive Condo']",,2,3,1
+device_403,1500,2900,4,,20,['HDB'],,4,3,5
+device_404,1300,2600,2,,60,"['Landed', 'HDB', 'Apartment', 'Executive Condo', 'Condo']",2000,5,1,5
+device_405,1400,2200,1,,40,"['Landed', 'Condo', 'Executive Condo', 'HDB', 'Apartment']",,4,4,2
+device_406,1300,2300,5,31,60,"['HDB', 'Apartment', 'Condo', 'Executive Condo', 'Landed']",,5,1,1
+device_407,1500,3000,6,,,"['Landed', 'Apartment', 'Executive Condo']",,1,4,5
+device_408,1300,2200,6,3,,,,4,5,5
+device_409,1300,2100,4,,,['Executive Condo'],,4,3,1
+device_410,800,2200,6,4,50,"['Condo', 'Apartment']",,5,1,3
+device_411,800,1700,6,30,,"['HDB', 'Apartment', 'Executive Condo']",,4,5,4
+device_412,1200,2200,2,,40,"['Apartment', 'Condo', 'Executive Condo']",,1,5,2
+device_413,1300,2500,5,27,40,"['HDB', 'Executive Condo', 'Apartment', 'Landed', 'Condo']",1000,1,4,3
+device_414,1200,2600,6,5,,"['Condo', 'HDB', 'Landed', 'Executive Condo', 'Apartment']",2000,2,4,1
+device_415,1000,2000,6,21,,['Landed'],,1,5,3
+device_416,1500,2900,3,,,,,5,1,5
+device_417,900,2000,1,,20,['Apartment'],,3,4,4
+device_418,1100,2500,4,,,"['HDB', 'Condo']",1000,3,3,1
+device_419,1000,2200,1,20,50,"['HDB', 'Apartment', 'Condo', 'Landed', 'Executive Condo']",1500,3,5,5
+device_420,1500,2900,1,,,"['Executive Condo', 'Condo', 'HDB', 'Apartment', 'Landed']",1000,3,5,1
+device_421,1000,2500,6,,,,500,5,1,5
+device_422,1200,2500,1,,60,['HDB'],800,3,1,1
+device_423,1000,2100,5,,,"['Landed', 'Condo', 'Apartment', 'Executive Condo', 'HDB']",,4,4,1
+device_424,1500,2700,5,,,"['Condo', 'HDB', 'Landed', 'Apartment', 'Executive Condo']",,2,1,3
+device_425,1200,2300,5,10,,"['HDB', 'Condo']",500,4,1,3
+device_426,1300,2200,5,,20,"['Landed', 'Executive Condo', 'HDB', 'Condo', 'Apartment']",,4,4,3
+device_427,1100,1900,5,9,,,,3,3,3
+device_428,800,2300,6,34,,"['Executive Condo', 'Apartment', 'Condo', 'HDB']",,4,3,5
+device_429,900,1700,6,17,20,"['Apartment', 'Condo']",,4,3,1
+device_430,1000,1800,2,,,"['Executive Condo', 'Landed', 'Apartment', 'HDB']",1500,4,1,3
+device_431,1500,2700,5,,,"['Condo', 'HDB', 'Executive Condo', 'Landed']",,5,3,1
+device_432,1500,2500,3,28,,['Apartment'],,4,1,1
+device_433,900,1700,6,30,,"['HDB', 'Apartment', 'Condo']",2000,2,3,2
+device_434,1400,2500,6,36,,,,2,2,1
+device_435,1200,2700,5,,20,"['HDB', 'Landed', 'Apartment']",500,4,5,4
+device_436,1300,2100,2,,,"['HDB', 'Condo', 'Apartment', 'Landed']",800,3,4,3
+device_437,1400,2900,3,,,"['Condo', 'HDB', 'Landed', 'Executive Condo', 'Apartment']",,3,5,4
+device_438,900,2200,5,25,,"['Landed', 'HDB']",,4,4,4
+device_439,1200,2200,6,23,,"['Condo', 'Apartment']",,5,2,3
+device_440,1500,2700,6,,,"['Executive Condo', 'Condo']",,2,1,3
+device_441,1100,2100,5,,,"['Apartment', 'Executive Condo', 'Landed']",800,5,5,2
+device_442,1300,2500,3,,40,"['Apartment', 'Executive Condo', 'Condo', 'HDB']",,4,5,2
+device_443,1200,2600,5,2,20,"['Executive Condo', 'Landed', 'Apartment']",1500,4,1,5
+device_444,1000,2400,2,,,"['Landed', 'Executive Condo', 'HDB', 'Condo', 'Apartment']",600,2,1,4
+device_445,1100,2000,4,28,,"['Apartment', 'Landed', 'Condo', 'Executive Condo']",800,5,4,4
+device_446,1300,2400,6,,20,,,2,4,5
+device_447,1200,2200,6,12,,"['Apartment', 'Landed', 'HDB']",,3,4,1
+device_448,1300,2100,6,36,20,"['Apartment', 'HDB']",,5,3,5
+device_449,1400,2400,5,,30,,1000,3,2,4
+device_450,800,2200,5,8,40,"['HDB', 'Landed']",1500,5,4,1
+device_451,1000,1800,4,,,"['Condo', 'Apartment', 'HDB', 'Executive Condo']",500,3,5,1
+device_452,1400,2600,2,5,20,['Apartment'],600,3,3,4
+device_453,1000,2200,4,,,,,5,2,4
+device_454,800,2200,6,1,60,['Executive Condo'],,5,1,2
+device_455,1200,2300,2,16,50,,,2,5,4
+device_456,900,1800,6,,,"['Condo', 'HDB', 'Landed', 'Apartment', 'Executive Condo']",1500,2,4,5
+device_457,800,1700,3,,30,['Landed'],2000,2,1,5
+device_458,900,2300,1,,60,"['Condo', 'Executive Condo', 'Landed', 'Apartment']",,3,1,4
+device_459,800,1800,2,,,"['HDB', 'Apartment', 'Condo']",,2,1,5
+device_460,1000,2000,2,11,40,,,1,2,2
+device_461,1200,2400,1,,20,['Apartment'],,1,1,2
+device_462,800,1900,5,12,,"['Landed', 'Condo', 'Executive Condo', 'HDB']",,3,2,5
+device_463,1100,2200,1,,40,"['Executive Condo', 'Landed', 'HDB', 'Condo']",800,1,2,2
+device_464,900,2200,1,,,"['Executive Condo', 'Landed', 'Condo', 'Apartment']",,5,5,5
+device_465,800,1900,1,12,,['HDB'],800,3,3,3
+device_466,900,1800,3,21,,['Condo'],1000,4,3,5
+device_467,1000,2300,2,1,30,"['HDB', 'Apartment', 'Landed', 'Condo', 'Executive Condo']",800,5,4,3
+device_468,1200,2000,2,31,20,"['Landed', 'Executive Condo', 'Apartment', 'HDB', 'Condo']",500,1,5,1
+device_469,1500,2700,1,,,"['HDB', 'Landed', 'Condo', 'Apartment']",800,5,1,1
+device_470,800,2100,1,,,,,2,5,1
+device_471,800,1800,5,,,"['HDB', 'Landed']",1000,2,4,5
+device_472,800,1700,5,,20,"['Condo', 'Executive Condo', 'HDB']",,3,3,1
+device_473,1200,2500,3,,40,['Apartment'],,1,1,3
+device_474,800,1800,2,,,"['Condo', 'Executive Condo', 'Landed']",,4,5,2
+device_475,1000,1900,2,31,,['HDB'],,3,1,1
+device_476,900,2400,1,36,,"['Condo', 'Apartment', 'HDB']",2000,2,3,5
+device_477,1100,1900,3,14,60,,,4,4,3
+device_478,1200,2500,5,2,50,"['Executive Condo', 'Landed', 'Apartment', 'Condo']",1500,4,2,1
+device_479,800,2100,2,18,30,"['Apartment', 'Landed', 'Executive Condo', 'Condo', 'HDB']",1500,1,1,2
+device_480,1200,2200,1,,40,"['Apartment', 'HDB']",,5,1,4
+device_481,1200,2700,6,,,,,5,4,2
+device_482,1500,3000,2,25,,"['HDB', 'Executive Condo', 'Landed', 'Condo']",,1,1,1
+device_483,1200,2500,6,,60,"['Apartment', 'Executive Condo', 'Condo', 'HDB']",,5,2,1
+device_484,800,1800,3,,,"['Apartment', 'Landed', 'Condo', 'Executive Condo', 'HDB']",,4,4,3
+device_485,1200,2100,5,25,,"['Landed', 'Executive Condo', 'Apartment', 'Condo']",500,5,5,1
+device_486,800,2000,4,7,,"['Apartment', 'Landed', 'Condo', 'Executive Condo']",2000,5,4,2
+device_487,800,1600,5,,20,"['Apartment', 'HDB']",800,5,4,5
+device_488,1200,2100,5,,,"['Apartment', 'Condo', 'HDB', 'Landed']",800,5,3,3
+device_489,1100,2300,6,,20,,500,3,4,1
+device_490,1300,2100,6,,,,,3,4,5
+device_491,900,2300,4,32,50,"['Condo', 'HDB']",500,5,1,4
+device_492,1500,2400,3,,50,"['Condo', 'HDB']",,4,1,1
+device_493,1300,2100,3,36,40,['Executive Condo'],,5,3,2
+device_494,1500,2400,3,,40,"['Apartment', 'HDB', 'Landed', 'Condo', 'Executive Condo']",,2,2,4
+device_495,1000,2500,4,,,"['Condo', 'Executive Condo', 'HDB']",800,4,4,3
+device_496,800,2000,3,,,"['HDB', 'Condo', 'Apartment']",,3,2,5
+device_497,1400,2400,2,5,,"['Apartment', 'Condo', 'HDB', 'Landed', 'Executive Condo']",1000,2,4,5
+device_498,1300,2600,4,16,50,"['Executive Condo', 'HDB', 'Condo', 'Apartment']",,4,2,5
+device_499,1400,2600,3,8,,"['Condo', 'Executive Condo', 'Apartment']",,4,5,5
+device_500,1400,2300,3,,,"['Landed', 'Apartment', 'HDB']",,1,2,2
