@@ -1,15 +1,18 @@
 "use client"
 
 import type React from "react"
+import { useState, useEffect } from "react"
 
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, School, Train, Star, ExternalLink } from "lucide-react"
+import { MapPin, School, Train, Star, ExternalLink, Heart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import type { Property } from "@/lib/api"
 import { toNumber } from "@/lib/utils/decimal"
+import { useBehaviorTracking } from "@/hooks/use-behavior-tracking"
+import { isFavorite, toggleFavorite } from "@/lib/favorites"
 
 interface RentBlockProps {
   property: Property
@@ -17,8 +20,16 @@ interface RentBlockProps {
 
 export default function RentBlock({ property }: RentBlockProps) {
   const router = useRouter()
+  const { trackClick, trackFavourite } = useBehaviorTracking()
+
+  const [isFavorited, setIsFavorited] = useState(false)
+
+  useEffect(() => {
+    setIsFavorited(isFavorite(property.property_id))
+  }, [property.property_id])
 
   const handleCardClick = () => {
+    trackClick(property.property_id)
     router.push(`/rent/${property.property_id}`, { state: { property } } as any)
   }
 
@@ -27,6 +38,19 @@ export default function RentBlock({ property }: RentBlockProps) {
     const lat = toNumber(property.latitude)
     const lng = toNumber(property.longitude)
     window.open(`/map/${property.property_id}?lat=${lat}&lng=${lng}`, "_blank")
+  }
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    trackClick(property.property_id)
+    router.push(`/rent/${property.property_id}`, { state: { property } } as any)
+  }
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const newFavoriteStatus = toggleFavorite(property.property_id)
+    setIsFavorited(newFavoriteStatus)
+    trackFavourite(property.property_id, newFavoriteStatus)
   }
 
   const renderStars = (count: number) => {
@@ -56,6 +80,16 @@ export default function RentBlock({ property }: RentBlockProps) {
             className="object-cover transition-transform duration-300 group-hover:scale-110"
           />
           <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">{property.facility_type}</Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-3 left-3 bg-white/90 hover:bg-white backdrop-blur-sm"
+            onClick={handleFavoriteClick}
+          >
+            <Heart
+              className={`h-5 w-5 transition-colors ${isFavorited ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+            />
+          </Button>
         </div>
       </CardHeader>
 
@@ -123,7 +157,7 @@ export default function RentBlock({ property }: RentBlockProps) {
           <MapPin className="h-4 w-4 mr-1.5" />
           View Map
         </Button>
-        <Button size="sm" className="flex-1" onClick={handleCardClick}>
+        <Button size="sm" className="flex-1" onClick={handleViewDetails}>
           View Details
           <ExternalLink className="h-4 w-4 ml-1.5" />
         </Button>
