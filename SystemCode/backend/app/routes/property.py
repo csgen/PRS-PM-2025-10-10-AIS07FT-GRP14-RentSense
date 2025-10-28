@@ -105,3 +105,12 @@ async def debug_query_housing_data(
     results = await fetch_recommend_properties_async(request_info)
     for r in results:
         print(r.model_dump_json())
+
+from app.mockdata.mock import run_mock_user
+
+@router.get("/debug/mock_user_data", response_model=None, status_code=status.HTTP_200_OK)
+async def debug_query_housing_data(
+    *,
+    db: AsyncSession = Depends(get_async_session)
+):
+    _=await run_mock_user()

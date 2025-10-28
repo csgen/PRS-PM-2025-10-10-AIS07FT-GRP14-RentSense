@@ -16,8 +16,8 @@ async def fetch_recommend_properties_async(params: RequestInfo) -> list[ResultIn
 
     execution_time = time.time() - first_end_time
     print(f'第二步 filter_housing_async 执行时间: {execution_time:.2f} 秒')
-    for r in results:
-        print(r.model_dump_json())
+    # for r in results:
+    #     print(r.model_dump_json())
     
     return results
 
