@@ -82,12 +82,12 @@ def remove_duplicate_housings(housings: list[HousingData]) -> tuple[list[Housing
 
 def get_importance_total_score(price_norm, commute_norm, neighbourhood_norm, request):
     '''加权总分'''
-    if request.importance_rent:
-        price_score = request.importance_rent * price_norm
-    if request.importance_location:
-        commute_score = request.importance_location * commute_norm
-    if request.importance_facility:
-        neighbourhood_score = request.importance_facility * neighbourhood_norm
+    i_rent = request.importance_rent or 3
+    i_location = request.importance_location or 3
+    i_facility = request.importance_facility or 3
+    price_score = i_rent * price_norm
+    commute_score = i_location * commute_norm
+    neighbourhood_score = i_facility * neighbourhood_norm
 
     return price_score+commute_score+neighbourhood_score
 
@@ -127,8 +127,8 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
 
         original_count = len(housings)
         print(f"在{time.time() - start_time:.2f} 秒内通过初步过滤得到{original_count}条房源记录。")
-        # 若结果少于150条，补充至不少于150条
-        target_count = 150
+        # 若结果少于100条，补充至不少于100条
+        target_count = 100
         if original_count < target_count:
             housings = await _expand_query_conditions(
                 session=session,
@@ -536,8 +536,6 @@ def get_user_req_feature_vector(request: RequestInfo):
     build_time_missing_val = 0
 
     # 只对3个特征进行编码（不含type）
-    cat_partial_row = [[district_val, is_room_val, build_time_missing_val]]
-
     # 手动拼接
     partial_encoded = encoder.transform([[None, district_val, is_room_val, build_time_missing_val]])[0]
     # 截掉前面 type 部分的维度
@@ -574,8 +572,14 @@ def get_user_req_feature_vector(request: RequestInfo):
 
 # 用户输入embedding
 def get_user_req_emb(request: RequestInfo):
+    start_time = time.time()
+
     user_vec = get_user_req_feature_vector(request=request)
     emb = autoencoder_user_req_emb(user_vec=user_vec)
+    
+    execution_time = time.time() - start_time
+    print(f'用户输入向量embedding执行时间: {execution_time:.2f} 秒')
+
     return emb
 
 def user_housing_similarity_score(housings: list[HousingData], request: RequestInfo):
@@ -586,6 +590,8 @@ def user_housing_similarity_score(housings: list[HousingData], request: RequestI
     {"property_id": 102, "score": 0.908, "source": "content"},
     ... ]
     '''
+    start_time = time.time()
+
     user_emb = get_user_req_emb(request=request)
     user_emb = np.array(user_emb).reshape(1, -1)
     housing_ids = [h.id for h in housings]
@@ -612,7 +618,9 @@ def user_housing_similarity_score(housings: list[HousingData], request: RequestI
         {"property_id": int(housings[i].id), "score": float(similarities[i]), "source": "content"}
         for i in range(len(housings))
     ]
-    # scored.sort(key=lambda x: x["score"], reverse=True)
+
+    execution_time = time.time() - start_time
+    print(f'计算cosine_similarity执行时间: {execution_time:.2f} 秒')
     return scored
 
 def user_housing_cf_score(housings: list[HousingData], request: RequestInfo):
