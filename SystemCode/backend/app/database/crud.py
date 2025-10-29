@@ -1,9 +1,11 @@
 from typing import List, Optional
 
-from sqlalchemy.exc import SQLAlchemyError
+from sqlmodel import select
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from redis import RedisError
 
+from app.models.behavior import UserBehaviorBase, UserBehavior
 from app.models import EnquiryForm, EnquiryEntity, Property, Recommendation
 from app.database.cache import redis_client, CACHE_TTL_SECONDS
 
@@ -91,3 +93,59 @@ async def save_recommendation(
         print(f"Failed to save recommendation for enquiry {eid}. Error: {e}")
     
     return saved_recommendation
+
+
+async def upsert_user_behavior(
+    *,
+    db: AsyncSession,
+    behavior: UserBehaviorBase
+) -> Optional[UserBehavior]:
+    
+    statement = select(UserBehavior).where(
+        UserBehavior.device_id == behavior.device_id,
+        UserBehavior.property_id == behavior.property_id
+    )
+
+    existing_behavior: Optional[UserBehavior] = None
+    saved_behavior: Optional[UserBehavior] = None
+    
+    try:
+        results = await db.exec(statement)
+        existing_behavior = results.first()
+
+        # 已存在数据，更新
+        if existing_behavior:
+            print(f"Updating existing behavior for device {behavior.device_id}, property {behavior.property_id}")
+
+            update_data = behavior.model_dump(exclude_unset=True)
+
+            update_data.pop("device_id", None)
+            update_data.pop("property_id", None)
+
+            for key, value in update_data.items():
+                setattr(existing_behavior, key, value)
+
+            saved_behavior = existing_behavior
+
+        # 不存在数据，插入
+        else:
+            print(f"Inserting new behavior for device {behavior.device_id}, property {behavior.property_id}")
+            new_behavior = UserBehavior.model_validate(behavior)
+            db.add(new_behavior)
+            saved_behavior = new_behavior
+        
+        await db.commit()
+
+        if saved_behavior:
+            await db.refresh(saved_behavior)
+            print(f"Successfully upserted behavior, bid: {saved_behavior.bid}")
+             
+    except IntegrityError as e:
+        await db.rollback()
+        print(f"IntegrityError")
+    
+    except SQLAlchemyError as e:
+        await db.rollback()
+        print(f"SQLAlchemyError")
+    
+    return saved_behavior 

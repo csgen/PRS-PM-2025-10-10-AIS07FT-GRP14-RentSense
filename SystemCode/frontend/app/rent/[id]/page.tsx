@@ -40,7 +40,7 @@ export default function RentDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [isFavorited, setIsFavorited] = useState(false)
 
-  const { trackView, trackFavourite } = useBehaviorTracking()
+  const { trackView, trackFavorite } = useBehaviorTracking()
   const entryTimeRef = useRef<number>(Date.now())
   const hasTrackedRef = useRef<boolean>(false)
 
@@ -175,7 +175,7 @@ export default function RentDetailPage() {
     if (!property) return
     const newFavoriteStatus = toggleFavorite(property.property_id)
     setIsFavorited(newFavoriteStatus)
-    trackFavourite(property.property_id, newFavoriteStatus)
+    trackFavorite(property.property_id, newFavoriteStatus)
   }
 
   if (loading) {
