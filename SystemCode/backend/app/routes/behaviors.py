@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.models.preference import UserPreference
 from app.models.behavior import UserBehaviorBase
 from app.dependencies import get_async_session
 from app.handlers import behavior_handler
+from app.database.crud import preference_crud
 
 
 router = APIRouter(prefix="/api/v1/behaviors", tags=["behaviors"])
