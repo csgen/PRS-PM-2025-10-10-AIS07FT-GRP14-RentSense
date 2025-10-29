@@ -27,6 +27,7 @@ async def submit_form_handler(
 
     # multi-objective optimization ranking
     ranked_properties: List[Property] = rec_service.multi_objective_optimization_ranking(
+        db=db,
         enquiry=enquiry, 
         propertyList=properties
     )
