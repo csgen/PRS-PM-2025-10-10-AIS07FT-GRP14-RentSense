@@ -26,3 +26,9 @@ httpx==0.26.0
 
 # mapping
 folium==0.16.0
+
+# lstm
+tensorflow>=2.10.0
+pandas>=1.5.0
+numpy>=1.23.0
+scikit-learn>=1.1.0
