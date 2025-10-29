@@ -108,7 +108,8 @@ async def debug_query_housing_data(
 
 from app.mockdata.mock import run_mock_user
 
-@router.get("/debug/mock_user_data", response_model=None, status_code=status.HTTP_200_OK)
+# 生成模拟用户数据
+# @router.get("/debug/mock_user_data", response_model=None, status_code=status.HTTP_200_OK)
 async def debug_query_housing_data(
     *,
     db: AsyncSession = Depends(get_async_session)
