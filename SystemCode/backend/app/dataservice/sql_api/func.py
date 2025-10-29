@@ -571,6 +571,13 @@ def user_housing_similarity_score(housings: list[HousingData], request: RequestI
     return scored
 
 def user_housing_cf_score(housings: list[HousingData], request: RequestInfo):
+    '''
+    根据cf打分
+    输出：
+    [ {"property_id": 87, "score": 0.913, "source": "cf"},
+    {"property_id": 102, "score": 0.908, "source": "cf"},
+    ... ]
+    '''
     # TODO: 真实cf逻辑 @ruyanjie
     scored = [
         {"property_id": int(housings[i].id), "score": 0, "source": "cf"}
