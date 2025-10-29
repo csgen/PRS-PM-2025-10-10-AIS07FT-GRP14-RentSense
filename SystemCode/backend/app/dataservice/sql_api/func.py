@@ -4,9 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy import func, text, or_
 import time
 import math
+import numpy as np
+import asyncio
+from neo4j import GraphDatabase
+from sklearn.metrics.pairwise import cosine_similarity
 from .api_model import RequestInfo, ResultInfo
 from .model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
-from .envconfig import get_database_url_async
+from .envconfig import get_database_url_async, get_neo4j_info
+from app.content_rcmd.embedding import scaler, encoder, global_means, autoencoder_user_req_emb
 
 DATABASE_URL_ASYNC = get_database_url_async()
 async_engine = create_async_engine(
@@ -16,6 +21,37 @@ async_engine = create_async_engine(
 AsyncSessionLocal = sessionmaker(
     bind=async_engine, class_=AsyncSession, expire_on_commit=False
 )
+
+# neo4j driver
+url, username, password = get_neo4j_info()
+graphdriver = GraphDatabase.driver(url, auth=(username, password))
+
+async def get_district_centroids():
+    async with AsyncSessionLocal() as session:
+        stmt = select(District.id, District.latitude, District.longitude)
+        result = await session.execute(stmt)
+        rows = result.all()
+        centroids = {r.id: (r.latitude, r.longitude) for r in rows if r.latitude and r.longitude}
+        return centroids
+
+_district_centroids_cache = None
+# 区域位置缓存（同步/异步包装）
+def get_district_centroids_cached_sync():
+    global _district_centroids_cache
+    if _district_centroids_cache is None:
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            # 如果当前已经有事件循环
+            return loop.create_task(get_district_centroids())
+        else:
+            _district_centroids_cache = asyncio.run(get_district_centroids())
+    return _district_centroids_cache
+    
+district_centroids = get_district_centroids_cached_sync()
 
 def remove_duplicate_housings(housings: list[HousingData]) -> tuple[list[HousingData], int]:
     '''去除少量重复的房源记录，返回去重后的列表和去除的数量'''
@@ -90,8 +126,8 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
 
         original_count = len(housings)
         print(f"在{time.time() - start_time:.2f} 秒内通过初步过滤得到{original_count}条房源记录。")
-        # 若结果少于50条，补充至50条
-        target_count = 50
+        # 若结果少于150条，补充至不少于150条
+        target_count = 150
         if original_count < target_count:
             housings = await _expand_query_conditions(
                 session=session,
@@ -100,10 +136,32 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
                 current_results=housings,
                 target_count=target_count
             )
-        print(f'第一步输出前一共{len(housings)}条房源')
-        return housings[:target_count]
+        print(f'第一步输出一共{len(housings)}条房源')
+        return housings
 
-async def filter_housing_async(housings: list[HousingData], request: RequestInfo):
+def cb_cf_rank(housings: list[HousingData], request: RequestInfo, w_content=0.7, w_cf=0.3, top_k=50):
+    # TODO: 算相似度（用两组归一化分数）
+    content_scores = user_housing_similarity_score(housings, request)
+    cf_scores = user_housing_cf_score(housings, request)
+
+    content_dict = {x["property_id"]: x["score"] for x in content_scores}
+    cf_dict = {x["property_id"]: x["score"] for x in cf_scores}
+
+    merged = []
+    for pid, c_score in content_dict.items():
+        cf_score = cf_dict.get(pid, 0)  # 没有视为0
+        final_score = w_content * c_score + w_cf * cf_score
+        merged.append({
+            "property_id": pid,
+            "score": final_score,
+            "source": "content+cf"
+        })
+
+    merged.sort(key=lambda x: x["score"], reverse=True)
+    return merged[:top_k]
+    
+
+async def filter_housing_async(housings: list[HousingData], request: RequestInfo)->list[ResultInfo]:
     '''根据 RequestInfo 对所有房源进行过滤并计算评分'''
     results = []
     
@@ -406,3 +464,116 @@ async def _expand_query_conditions(
 
     print(f'放宽限制查询时间: {time.time() - start_time:.2f} 秒')
     return results
+
+# 用户输入向量化
+def get_user_req_feature_vector(request: RequestInfo):
+    # 数值层
+    # 租金区间 → 理想租金
+    price_val = (request.min_monthly_rent + request.max_monthly_rent) / 2
+    price_scaled = scaler["price"].transform([[price_val]])[0][0]
+
+    # 没有面积输入 → 用平均值
+    area_scaled = scaler["area_sqft"].transform([[global_means["area_sqft"]]])[0][0]
+
+    # 没有build_time输入 → 平均年份
+    build_time_scaled = scaler["build_time"].transform([[global_means["build_time"]]])[0][0]
+
+    # 距MRT距离
+    if request.max_mrt_distance:
+        mrt_scaled = scaler["distance_to_mrt"].transform([[request.max_mrt_distance]])[0][0]
+    else:
+        mrt_scaled = scaler["distance_to_mrt"].transform([[global_means["distance_to_mrt"]]])[0][0]
+    # 先用单间
+    beds_scaled = scaler["beds_num"].transform([[1]])[0][0]
+    baths_scaled = scaler["baths_num"].transform([[1]])[0][0]
+
+    num_vec = [price_scaled, area_scaled, build_time_scaled, mrt_scaled, beds_scaled, baths_scaled]
+
+    # 类别层
+    # 类型
+    if request.flat_type_preference:
+        type_vec = encoder["type"].transform(request.flat_type_preference).mean(axis=0)
+    else:
+        type_vec = np.zeros(len(encoder["type"].categories_[0]))
+    # 区域
+    if request.target_district_id:
+        district_vec = encoder["district_id"].transform([[request.target_district_id]]).flatten()
+    else:
+        district_vec = np.zeros(len(encoder["district_id"].categories_[0]))
+    # 其他
+    is_room = 0
+    build_missing = 0
+
+    # 文本层
+    text_vec = np.zeros(384)
+
+    # 空间层
+    if request.target_district_id and request.target_district_id in district_centroids:
+        lat, lon = district_centroids[request.target_district_id]
+    else:
+        lat, lon = global_means["latitude"], global_means["longitude"]
+    
+    lat_r, lon_r = np.radians(lat), np.radians(lon)
+    geo_vec = np.array([
+        np.cos(lat_r) * np.cos(lon_r),
+        np.cos(lat_r) * np.sin(lon_r),
+        np.sin(lat_r)
+    ])
+
+    user_vec = np.concatenate([
+        num_vec, type_vec, district_vec, [is_room, build_missing],
+        text_vec, geo_vec
+    ])
+
+    return user_vec
+
+# 用户输入embedding
+def get_user_req_emb(request: RequestInfo):
+    user_vec = get_user_req_feature_vector(request=request)
+    emb = autoencoder_user_req_emb(user_vec=user_vec)
+    return emb
+
+def user_housing_similarity_score(housings: list[HousingData], request: RequestInfo):
+    '''
+    根据用户输入计算每个房源与用户 embedding 的相似度并打分
+    输出：
+    [ {"property_id": 87, "score": 0.913, "source": "content"},
+    {"property_id": 102, "score": 0.908, "source": "content"},
+    ... ]
+    '''
+    user_emb = get_user_req_emb(request=request)
+    user_emb = np.array(user_emb).reshape(1, -1)
+    housing_ids = [h.id for h in housings]
+    embeddings = []
+    with graphdriver.session() as session:
+        result = session.run(
+            """
+            MATCH (p:Property)
+            WHERE p.id IN $ids
+            RETURN p.id AS id, p.embedding AS embedding
+            """,
+            ids=housing_ids
+        )
+        records = result.data()
+    graphdriver.close()
+    emb_dict = {r["id"]: np.array(r["embedding"], dtype=np.float32) for r in records}
+    embeddings = [emb_dict.get(h.id, np.zeros(128)) for h in housings]
+    property_embs = np.stack(embeddings)
+
+    # 相似度计算
+    similarities = cosine_similarity(user_emb, property_embs)[0]
+
+    scored = [
+        {"property_id": int(housings[i].id), "score": float(similarities[i]), "source": "content"}
+        for i in range(len(housings))
+    ]
+    # scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored
+
+def user_housing_cf_score(housings: list[HousingData], request: RequestInfo):
+    # TODO: 真实cf逻辑 @ruyanjie
+    scored = [
+        {"property_id": int(housings[i].id), "score": 0, "source": "cf"}
+        for i in range(len(housings))
+    ]
+    return scored

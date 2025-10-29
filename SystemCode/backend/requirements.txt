@@ -26,3 +26,8 @@ httpx==0.26.0
 
 # mapping
 folium==0.16.0
+
+neo4j==5.28.2
+joblib==1.5.2
+sklearn-pandas==2.2.0
+torch==2.8.0
