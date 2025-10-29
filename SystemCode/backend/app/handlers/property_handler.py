@@ -7,6 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, Property, RecommendationResponse
 from app.database.crud import enquiry_crud, recommendation_crud
+from app.database import cache
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
@@ -26,7 +27,7 @@ async def submit_form_handler(
     properties = await rec_service.fetch_recommend_properties(enquiry)
 
     # multi-objective optimization ranking
-    ranked_properties: List[Property] = rec_service.multi_objective_optimization_ranking(
+    ranked_properties: List[Property] = await rec_service.multi_objective_optimization_ranking(
         db=db,
         enquiry=enquiry, 
         propertyList=properties
@@ -46,6 +47,8 @@ async def submit_form_handler(
         db=db, 
         properties=top_k_with_explanations
     )
+
+    await cache.save_latest_properties_as_hash(properties=top_k_with_explanations)
 
     return RecommendationResponse(properties=top_k_with_explanations)
 

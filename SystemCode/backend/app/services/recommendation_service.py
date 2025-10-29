@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
 from app.dataservice.sql_api.api import fetch_recommend_properties_async
-from app.database.crud.preference_crud import get_user_preference_by_device_id
+from app.database.crud import preference_crud
 
 
 # Get recommended property list (unsorted)
@@ -31,7 +31,7 @@ async def fetch_recommend_properties(params: EnquiryForm) -> List[Property]:
 
 
 # Sort recommended property list
-def multi_objective_optimization_ranking(
+async def multi_objective_optimization_ranking(
         *,
         db: AsyncSession,
         enquiry: EnquiryForm,
@@ -51,7 +51,8 @@ def multi_objective_optimization_ranking(
 
     properties_with_crowding = _calculate_crowding_distance(pareto_layers)
 
-    omega_weights: Optional[UserPreference] = get_user_preference_by_device_id(db=db,device_id=enquiry.device_id)
+    omega_weights: Optional[UserPreference] = \
+        await preference_crud.get_user_preference_by_device_id(db=db,device_id=enquiry.device_id)
 
     ranked_properties = _final_ranking(
         properties_with_crowding=properties_with_crowding, 
