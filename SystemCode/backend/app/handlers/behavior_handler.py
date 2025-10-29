@@ -2,7 +2,7 @@ from typing import Optional
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.behavior import UserBehavior, UserBehaviorBase
-from app.database import crud as db_service
+from app.database.crud import behavior_crud
 
 async def save_user_behavior(
     *,
@@ -10,7 +10,7 @@ async def save_user_behavior(
     behavior: UserBehaviorBase
 ) -> Optional[UserBehavior] :
     
-    saved_behavior = await db_service.upsert_user_behavior(db=db, behavior=behavior)
+    saved_behavior = await behavior_crud.upsert_user_behavior(db=db, behavior=behavior)
 
     if saved_behavior:
         print(saved_behavior.model_dump_json(indent=2))

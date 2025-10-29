@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from app.models.preference import UserPreference
+from app.models.behavior import UserBehaviorComplete
 import tensorflow as tf
 from tensorflow import keras
 from sklearn.preprocessing import StandardScaler, LabelEncoder
@@ -7,34 +9,18 @@ import pickle
 from ast import literal_eval
 from datetime import datetime
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import List, Dict, Optional
 from typing import List
 
-#用来测试的class，实际调用的时候直接改成实际的class就行
-@dataclass
-class UserBehaviorComplete:
-    device_id: str
-    property_id: int
-    dwell_time: float
-    favorite: bool
-    update_time: datetime
-    name: str
-    district: str
-    price: float
-    beds: int
-    baths: int
-    area: int
-    build_time: str
-    location: str
-    time_to_school: int
-    distance_to_mrt: int
-    latitude: float
-    longitude: float
-    costScore: float
-    commuteScore: float
-    neighborhoodScore: float
-    public_facilities: List[Dict[str, int]]
-    facility_type: str
+import sys
+import os
+from pathlib import Path
+
+# 添加项目根目录到 Python 路径
+current_file = Path(__file__).resolve()
+project_root = current_file.parents[4]  # PRS-PM-2025-10-10-AIS07FT-GRP14-RentSense
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 
 _model = None
@@ -100,7 +86,7 @@ def preprocess_single_behavior(behavior, label_encoders):
     return features
 
 
-def predict_omega(user_behaviors, model, scaler, label_encoders, feature_names, sequence_length):
+def predict_omega(user_behaviors, model, scaler, label_encoders, feature_names, sequence_length) -> tuple:
     sorted_behaviors = sorted(user_behaviors, key=lambda x: x.update_time)
     features_list = [preprocess_single_behavior(b, label_encoders) for b in sorted_behaviors]
     features_array = np.array(features_list)
@@ -115,6 +101,7 @@ def predict_omega(user_behaviors, model, scaler, label_encoders, feature_names, 
     sequence_scaled = scaler.transform(sequence_reshaped).reshape(sequence.shape)
     prediction = model.predict(sequence_scaled, verbose=0)[0]
     prediction = prediction / prediction.sum()
+    print(f"=========================prediction type: {type(prediction)}=========================")
     return tuple(prediction) #这是最终输出的omega值，定义完omega的格式之后替换成omega的真正格式就行
 
 
