@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from app.models.behavior import UserBehaviorComplete
 import tensorflow as tf
 from tensorflow import keras
 from sklearn.preprocessing import StandardScaler, LabelEncoder
@@ -9,32 +10,6 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import List, Dict
 from typing import List
-
-#用来测试的class，实际调用的时候直接改成实际的class就行
-@dataclass
-class UserBehaviorComplete:
-    device_id: str
-    property_id: int
-    dwell_time: float
-    favorite: bool
-    update_time: datetime
-    name: str
-    district: str
-    price: float
-    beds: int
-    baths: int
-    area: int
-    build_time: str
-    location: str
-    time_to_school: int
-    distance_to_mrt: int
-    latitude: float
-    longitude: float
-    costScore: float
-    commuteScore: float
-    neighborhoodScore: float
-    public_facilities: List[Dict[str, int]]
-    facility_type: str
 
 
 _model = None
