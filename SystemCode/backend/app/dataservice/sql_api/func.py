@@ -13,6 +13,9 @@ from .model import HousingData, District, University, CommuteTime, Park, HawkerC
 from .envconfig import get_database_url_async, get_neo4j_info
 from app.content_rcmd.embedding import scaler, encoder, global_means, autoencoder_user_req_emb
 
+from joblib import load
+
+
 DATABASE_URL_ASYNC = get_database_url_async()
 async_engine = create_async_engine(
     DATABASE_URL_ASYNC, 
@@ -25,6 +28,43 @@ AsyncSessionLocal = sessionmaker(
 # neo4j driver
 url, username, password = get_neo4j_info()
 graphdriver = GraphDatabase.driver(url, auth=(username, password))
+
+# cf
+# === CF (ALS) artifacts, lazy-loaded once ===
+_CF_MODEL_DIR = os.path.join("SystemCode", "backend", "app", "dataservice", "models")
+_CF_ALS_PATH  = os.path.join(_CF_MODEL_DIR, "als_model.pkl")
+_CF_U2I_PATH  = os.path.join(_CF_MODEL_DIR, "user2idx.json")
+_CF_I2I_PATH  = os.path.join(_CF_MODEL_DIR, "item2idx.json")
+
+_CF_MODEL = None
+_CF_USER2IDX = None
+_CF_ITEM2IDX = None
+_CF_IDX2ITEM = None
+
+def _ensure_cf_loaded():
+    """Lazy load ALS model and mappings once."""
+    global _CF_MODEL, _CF_USER2IDX, _CF_ITEM2IDX, _CF_IDX2ITEM
+    if _CF_MODEL is not None:
+        return
+    if not (os.path.exists(_CF_ALS_PATH) and os.path.exists(_CF_U2I_PATH) and os.path.exists(_CF_I2I_PATH)):
+        # 没有模型就保持 None；CF 会自动给出兜底分数（全 0）由内容分顶上
+        print("⚠️ CF model artifacts not found, CF scores default to 0.")
+        return
+    print(f"[CF] Loading ALS model/mappings from: '{_CF_MODEL_DIR}'")
+    _CF_MODEL = load(_CF_ALS_PATH)
+    # 兼容 BOM
+    _CF_USER2IDX = json.load(open(_CF_U2I_PATH, encoding="utf-8-sig"))
+    _CF_ITEM2IDX = json.load(open(_CF_I2I_PATH, encoding="utf-8-sig"))
+    _CF_IDX2ITEM = {v: k for k, v in _CF_ITEM2IDX.items()}
+
+def _minmax_norm(arr: np.ndarray) -> np.ndarray:
+    if arr.size == 0:
+        return arr
+    lo, hi = float(arr.min()), float(arr.max())
+    if hi - lo < 1e-12:
+        return np.ones_like(arr, dtype=float) * 0.5
+    return (arr - lo) / (hi - lo + 1e-12)
+# === CF (ALS) artifacts, lazy-loaded once ===
 
 async def get_district_centroids():
     async with AsyncSessionLocal() as session:
@@ -570,17 +610,81 @@ def user_housing_similarity_score(housings: list[HousingData], request: RequestI
     # scored.sort(key=lambda x: x["score"], reverse=True)
     return scored
 
+
+
+
 def user_housing_cf_score(housings: list[HousingData], request: RequestInfo):
-    '''
-    根据cf打分
-    输出：
-    [ {"property_id": 87, "score": 0.913, "source": "cf"},
-    {"property_id": 102, "score": 0.908, "source": "cf"},
-    ... ]
-    '''
-    # TODO: 真实cf逻辑 @ruyanjie
-    scored = [
-        {"property_id": int(housings[i].id), "score": 0, "source": "cf"}
-        for i in range(len(housings))
-    ]
+    """
+    用已训练 ALS 模型对候选 housings 打 CF 分。
+    - 已见房源（在 item2idx 中出现过）用 ALS 的 recommend(items=...) 打 raw 分
+    - 未见房源（训练集中没出现过的 ID）给 0（或可改成 mean/constant，交给内容模型兜底）
+    - 新用户（user_id 不在 user2idx）整批返回 0（让内容分接管）
+    返回：
+      [{"property_id": <int>, "score": 0~1, "source": "cf"}, ...]
+    """
+    # 1) 准备
+    _ensure_cf_loaded()
+    if _CF_MODEL is None or _CF_USER2IDX is None or _CF_ITEM2IDX is None:
+        # 没模型：直接给 0
+        return [{"property_id": int(h.id), "score": 0.0, "source": "cf"} for h in housings]
+
+    # 2) 取 user_id（兼容 device_id / user_id）
+    user_id = getattr(request, "device_id", None) or getattr(request, "user_id", None)
+    if not user_id or (user_id not in _CF_USER2IDX):
+        # 新用户：CF 给 0，由内容模型兜底
+        return [{"property_id": int(h.id), "score": 0.0, "source": "cf"} for h in housings]
+
+    u = _CF_USER2IDX[user_id]
+
+    # 3) 划分候选：已见/未见
+    cand_ids_str = [str(h.id) for h in housings]
+    known_item_idx = []
+    known_item_pids = []
+    unknown_pids = []
+    for pid in cand_ids_str:
+        if pid in _CF_ITEM2IDX:
+            known_item_pids.append(pid)
+            known_item_idx.append(_CF_ITEM2IDX[pid])
+        else:
+            unknown_pids.append(pid)
+
+    # 4) 已见候选：用 recommend(..., items=selected) 打 raw 分
+    pid_to_cfraw = {}
+    if known_item_idx:
+        selected = np.array(known_item_idx, dtype=np.int32)
+        try:
+            item_idx, scores = _CF_MODEL.recommend(
+                userid=u,
+                user_items=None,
+                N=len(selected),                 # 只对这些候选打分
+                items=selected,
+                filter_already_liked_items=False,
+                recalculate_user=False
+            )
+        except Exception as e:
+            print(f"⚠️ CF recommend(items=selected) failed: {e}")
+            # 失败则全部置 0
+            return [{"property_id": int(h.id), "score": 0.0, "source": "cf"} for h in housings]
+
+        scores = np.array(scores, dtype=float)
+        ordered_pids = [_CF_IDX2ITEM[int(i)] for i in item_idx]  # 映射回 property_id(str)
+        for pid, raw in zip(ordered_pids, scores):
+            pid_to_cfraw[pid] = float(raw)
+
+    # 5) 未见候选：CF 无历史，给 0（也可改成 mean/0.5 常数）
+    for pid in unknown_pids:
+        pid_to_cfraw[pid] = 0.0
+
+    # 6) 统一归一化到 0~1（避免和内容分量纲不一致）
+    raw_list = np.array([pid_to_cfraw[str(h.id)] for h in housings], dtype=float)
+    norm_list = _minmax_norm(raw_list)
+
+    # 7) 组织输出（保持输入顺序对应）
+    scored = []
+    for h, n in zip(housings, norm_list):
+        scored.append({
+            "property_id": int(h.id),
+            "score": float(n),
+            "source": "cf"
+        })
     return scored
