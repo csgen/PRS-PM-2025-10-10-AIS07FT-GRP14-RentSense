@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, func
+from sqlalchemy import Column, DateTime, func, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 from app.dataservice.sql_api.api_model import ResultInfo
@@ -9,7 +9,7 @@ from app.dataservice.sql_api.api_model import ResultInfo
 
 class UserBehaviorBase(SQLModel):
     device_id: Optional[str] = Field(default=None, max_length=100, index=True)
-    property_id: int
+    property_id: int = Field(index=True)
     dwell_time: Optional[float] = Field(default=0.0)
     favorite: bool = Field(default=False)
     
@@ -21,6 +21,7 @@ class UserBehaviorBase(SQLModel):
 # 用户行为模型
 class UserBehavior(UserBehaviorBase, table=True):
     __tablename__ = "behaviors"
+    __table_args__ = (UniqueConstraint("device_id", "property_id", name="uq_device_property"),)
 
     bid: Optional[int] = Field(default=None, primary_key=True)
     

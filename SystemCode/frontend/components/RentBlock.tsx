@@ -20,7 +20,7 @@ interface RentBlockProps {
 
 export default function RentBlock({ property }: RentBlockProps) {
   const router = useRouter()
-  const { trackClick, trackFavourite } = useBehaviorTracking()
+  const { trackClick, trackFavorite } = useBehaviorTracking()
 
   const [isFavorited, setIsFavorited] = useState(false)
 
@@ -50,7 +50,7 @@ export default function RentBlock({ property }: RentBlockProps) {
     e.stopPropagation()
     const newFavoriteStatus = toggleFavorite(property.property_id)
     setIsFavorited(newFavoriteStatus)
-    trackFavourite(property.property_id, newFavoriteStatus)
+    trackFavorite(property.property_id, newFavoriteStatus)
   }
 
   const renderStars = (count: number) => {

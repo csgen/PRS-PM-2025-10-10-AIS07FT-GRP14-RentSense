@@ -268,10 +268,10 @@ interface ViewBehavior {
   dwell_time: number
 }
 
-interface FavouriteBehavior {
+interface FavoriteBehavior {
   device_id: string
   property_id: number
-  favourite: boolean
+  favorite: boolean
 }
 
 /**
@@ -335,17 +335,17 @@ export const behaviorApi = {
   },
 
   /**
-   * Track property favourite behavior
+   * Track property favorite behavior
    */
-  trackFavourite: async (device_id: string, property_id: number, favourite: boolean): Promise<void> => {
+  trackFavorite: async (device_id: string, property_id: number, favorite: boolean): Promise<void> => {
     try {
-      const payload: FavouriteBehavior = {
+      const payload: FavoriteBehavior = {
         device_id,
         property_id,
-        favourite,
+        favorite,
       }
 
-      const response = await fetch(`${API_BASE_URL}api/v1/behaviors/favourite`, {
+      const response = await fetch(`${API_BASE_URL}api/v1/behaviors/favorite`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -354,11 +354,11 @@ export const behaviorApi = {
       })
 
       if (!response.ok) {
-        console.error("[v0] Favourite tracking failed:", response.status, response.statusText)
+        console.error("[v0] Favorite tracking failed:", response.status, response.statusText)
       }
     } catch (error) {
       // Silent failure - don't disrupt user experience
-      console.error("[v0] Favourite tracking error:", error)
+      console.error("[v0] Favorite tracking error:", error)
     }
   },
 }

@@ -5,7 +5,7 @@ import { getDeviceId } from "@/lib/device"
 import { behaviorApi } from "@/lib/api"
 /**
  * Custom hook for tracking user behaviors
- * Provides methods to track clicks, views, and favourites
+ * Provides methods to track clicks, views, and favorites
  */
 export function useBehaviorTracking() {
   /**
@@ -28,18 +28,18 @@ export function useBehaviorTracking() {
   }, [])
 
   /**
-   * Track property favourite behavior
-   * @param property_id - The ID of the property that was favourited/unfavourited
-   * @param favourite - True if favourited, false if unfavourited
+   * Track property favorite behavior
+   * @param property_id - The ID of the property that was favorited/unfavorited
+   * @param favorite - True if favorited, false if unfavorited
    */
-  const trackFavourite = useCallback(async (property_id: number, favourite: boolean) => {
+  const trackFavorite = useCallback(async (property_id: number, favorite: boolean) => {
     const device_id = getDeviceId()
-    await behaviorApi.trackFavourite(device_id, property_id, favourite)
+    await behaviorApi.trackFavorite(device_id, property_id, favorite)
   }, [])
 
   return {
     trackClick,
     trackView,
-    trackFavourite,
+    trackFavorite,
   }
 }
