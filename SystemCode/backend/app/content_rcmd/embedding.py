@@ -35,7 +35,7 @@ autoencoder = load_autoencoder()
 
 def autoencoder_user_req_emb(user_vec):
     with torch.no_grad():
-        _, user_emb = autoencoder(torch.tensor(user_vec, dtype=torch.float32).unsqueeze(0))
+        user_emb = autoencoder(torch.tensor(user_vec, dtype=torch.float32).unsqueeze(0))
 
         user_emb_np = user_emb.numpy()[0].tolist()
         print("用户 embedding 向量维度:", len(user_emb_np))
