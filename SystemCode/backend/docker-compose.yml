@@ -48,6 +48,9 @@ services:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       PYTHONPATH: /app
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USERNAME: ${NEO4J_USERNAME}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
     volumes:
       - .:/app
     # Needs to be commented out when developing in containers

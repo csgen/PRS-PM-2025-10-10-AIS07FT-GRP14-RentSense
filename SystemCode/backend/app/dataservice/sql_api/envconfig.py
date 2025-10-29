@@ -26,6 +26,12 @@ def get_openmap_library_url(): # 查询图书馆信息用
     token = os.getenv('OPEN_MAP_TOKEN')
     return library_url, token
 
+def get_neo4j_info():
+    url = os.getenv('NEO4J_URI')
+    username = os.getenv('NEO4J_USERNAME')
+    password = os.getenv('NEO4J_PASSWORD')
+    return url, username, password
+
 if __name__ == "__main__":
     # print(os.getcwd())
     # get_database_url()

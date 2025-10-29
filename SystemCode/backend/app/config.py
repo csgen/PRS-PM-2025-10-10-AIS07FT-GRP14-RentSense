@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: str
 
+    # neo4j
+    NEO4J_URI: str
+    NEO4J_USERNAME: str
+    NEO4J_PASSWORD: str
+
     class Config:
         env_file = ".env"
 
