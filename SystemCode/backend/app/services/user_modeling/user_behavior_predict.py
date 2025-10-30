@@ -86,13 +86,12 @@ def preprocess_single_behavior(behavior, label_encoders):
     return features
 
 
-def predict_omega(user_behaviors, model, scaler, label_encoders, feature_names, sequence_length) -> tuple:
-    sorted_behaviors = sorted(user_behaviors, key=lambda x: x.update_time)
-    features_list = [preprocess_single_behavior(b, label_encoders) for b in sorted_behaviors]
-    features_array = np.array(features_list)
+def predict_omega(user_behavior: UserBehaviorComplete, model, scaler, label_encoders, feature_names, sequence_length) -> Optional[UserPreference]:
+    feature = preprocess_single_behavior(user_behavior, label_encoders) 
+    features_np = np.array(feature)
 
-    seq_len = min(len(features_array), sequence_length)
-    sequence = features_array[-seq_len:]
+    seq_len = min(len(features_np), sequence_length)
+    sequence = features_np[-seq_len:]
     if len(sequence) < sequence_length:
         padding = np.zeros((sequence_length - len(sequence), len(feature_names)))
         sequence = np.vstack([padding, sequence])
@@ -100,20 +99,24 @@ def predict_omega(user_behaviors, model, scaler, label_encoders, feature_names, 
     sequence_reshaped = sequence.reshape(-1, sequence.shape[-1])
     sequence_scaled = scaler.transform(sequence_reshaped).reshape(sequence.shape)
     prediction = model.predict(sequence_scaled, verbose=0)[0]
-    prediction = prediction / prediction.sum()
-    print(f"=========================prediction type: {type(prediction)}=========================")
-    return tuple(prediction) #这是最终输出的omega值，定义完omega的格式之后替换成omega的真正格式就行
+    prediction = tuple(prediction / prediction.sum())
+    return UserPreference(
+        device_id=user_behavior.device_id,
+        costScore=prediction[0],
+        commuteScore=prediction[1],
+        neighborhoodScore=prediction[2]
+    )
 
 
 
-def predict_user_omega(user_behaviors: List[UserBehaviorComplete]) -> tuple:
+def predict_user_omega(user_behavior: UserBehaviorComplete) -> Optional[UserPreference]:
     global _model, _scaler, _label_encoders, _feature_names, _sequence_length
 
     if _model is None or _scaler is None:
         _model, _scaler, _label_encoders, _feature_names, _sequence_length = load_model_and_metadata()
 
-    return predict_omega(
-        user_behaviors,
+    return predict_omega(      
+        user_behavior,
         _model,
         _scaler,
         _label_encoders,
@@ -165,7 +168,7 @@ if __name__ == "__main__":
         sample_records.append(UserBehaviorComplete(**record))
 
     try:
-        omega_result = predict_user_omega(sample_records)  #调用的时候直接用这个方法就行
+        omega_result = predict_user_omega(sample_records[0])  #调用的时候直接用这个方法就行
         print("\n✅ Prediction completed!")
         print(f"User preference weights: {omega_result}")
     except Exception as e:

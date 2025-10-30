@@ -26,7 +26,7 @@ async def submit_form(
     client: openai.AsyncOpenAI = Depends(get_async_openai_client),
     enquiry: EnquiryForm
 ):
-
+    print(f'============enquiry.device_id: {enquiry.device_id}============')
     return await property_handler.submit_form_handler(db=db, client=client, enquiry=enquiry)
 
 

@@ -15,7 +15,7 @@ async def click(
     db: AsyncSession = Depends(get_async_session),
     behavior: UserBehaviorBase
 ):
-    await behavior_handler.save_user_behavior(db=db, behavior=behavior)
+    await behavior_handler.click_behavior_handler(db=db, behavior=behavior)
 
 
 # user view behavior
@@ -25,7 +25,7 @@ async def view(
     db: AsyncSession = Depends(get_async_session),
     behavior: UserBehaviorBase
 ):
-    await behavior_handler.save_user_behavior(db=db, behavior=behavior)
+    await behavior_handler.view_behavior_handler(db=db, behavior=behavior)
 
 
 # user favorite behavior
@@ -35,4 +35,4 @@ async def favorite(
     db: AsyncSession = Depends(get_async_session),
     behavior: UserBehaviorBase
 ):
-    await behavior_handler.save_user_behavior(db=db, behavior=behavior)
+    await behavior_handler.favorite_behavior_handler(db=db, behavior=behavior)

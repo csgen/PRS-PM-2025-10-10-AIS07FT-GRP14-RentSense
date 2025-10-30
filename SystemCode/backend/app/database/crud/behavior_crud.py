@@ -5,7 +5,6 @@ from sqlmodel import select
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from SystemCode.backend.app.dependencies import get_async_session
 from app.models.behavior import UserBehaviorBase, UserBehavior
 
 
