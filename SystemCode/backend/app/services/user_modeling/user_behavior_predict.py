@@ -89,12 +89,7 @@ def preprocess_single_behavior(behavior, label_encoders):
 def predict_omega(user_behavior: UserBehaviorComplete, model, scaler, label_encoders, feature_names, sequence_length) -> Optional[UserPreference]:
     feature = preprocess_single_behavior(user_behavior, label_encoders) 
     features_np = np.array(feature)
-
-    seq_len = min(len(features_np), sequence_length)
-    sequence = features_np[-seq_len:]
-    if len(sequence) < sequence_length:
-        padding = np.zeros((sequence_length - len(sequence), len(feature_names)))
-        sequence = np.vstack([padding, sequence])
+    sequence = np.tile(features_np, (sequence_length, 1)) 
     sequence = sequence.reshape(1, sequence_length, len(feature_names))
     sequence_reshaped = sequence.reshape(-1, sequence.shape[-1])
     sequence_scaled = scaler.transform(sequence_reshaped).reshape(sequence.shape)
@@ -102,9 +97,9 @@ def predict_omega(user_behavior: UserBehaviorComplete, model, scaler, label_enco
     prediction = tuple(prediction / prediction.sum())
     return UserPreference(
         device_id=user_behavior.device_id,
-        costScore=prediction[0],
-        commuteScore=prediction[1],
-        neighborhoodScore=prediction[2]
+        costScore=float(prediction[0]),
+        commuteScore=float(prediction[1]),
+        neighborhoodScore=float(prediction[2])
     )
 
 
