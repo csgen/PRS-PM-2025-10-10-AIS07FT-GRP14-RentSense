@@ -8,7 +8,7 @@ from app.database.crud import behavior_crud, preference_crud
 from app.database import cache
 from app.services.user_modeling.user_behavior_predict import predict_user_omega
 
-
+# new feature
 async def click_behavior_handler(
     *,
     db: AsyncSession,
