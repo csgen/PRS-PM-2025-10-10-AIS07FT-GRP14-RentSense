@@ -6,7 +6,8 @@ from pydantic import ValidationError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, Property, RecommendationResponse
-from app.database import crud as db_service
+from app.database.crud import enquiry_crud, recommendation_crud
+from app.database import cache
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
@@ -20,13 +21,14 @@ async def submit_form_handler(
 ) -> RecommendationResponse:
 
     # save enquiry to db and cache
-    enquiry_entity = await db_service.save_enquiry(db=db, enquiry=enquiry)
+    enquiry_entity = await enquiry_crud.save_enquiry(db=db, enquiry=enquiry)
 
     # get TopN recommendation
     properties = await rec_service.fetch_recommend_properties(enquiry)
 
     # multi-objective optimization ranking
-    ranked_properties: List[Property] = rec_service.multi_objective_optimization_ranking(
+    ranked_properties: List[Property] = await rec_service.multi_objective_optimization_ranking(
+        db=db,
         enquiry=enquiry, 
         propertyList=properties
     )
@@ -40,11 +42,13 @@ async def submit_form_handler(
     )
 
     # save recommendation result to db and cache
-    await db_service.save_recommendation(
+    await recommendation_crud.save_recommendation(
         eid=enquiry_entity.eid if enquiry_entity else None, 
         db=db, 
         properties=top_k_with_explanations
     )
+
+    await cache.save_latest_properties_as_hash(properties=top_k_with_explanations)
 
     return RecommendationResponse(properties=top_k_with_explanations)
 
