@@ -29,6 +29,9 @@ folium==0.16.0
 neo4j==5.28.2
 joblib==1.5.2
 
+neo4j==5.28.2
+joblib==1.5.2
+
 # lstm
 tensorflow>=2.10.0
 pandas>=1.5.0
