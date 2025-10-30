@@ -41,6 +41,9 @@ async def save_latest_properties_as_hash(
             for prop in properties
             if prop and prop.property_id
         }
+
+        for prop in properties:
+            print(f"===============prop: {prop.model_dump_json(indent=2)}")
     
     except Exception as e:
         print(f"Failed to serialize properties into map. Error: {e}")

@@ -95,6 +95,7 @@ def predict_omega(user_behavior: UserBehaviorComplete, model, scaler, label_enco
     sequence_scaled = scaler.transform(sequence_reshaped).reshape(sequence.shape)
     prediction = model.predict(sequence_scaled, verbose=0)[0]
     prediction = tuple(prediction / prediction.sum())
+    print(f"===============predict_omega: {float(prediction[0]), float(prediction[1]), float(prediction[2])}===============")
     return UserPreference(
         device_id=user_behavior.device_id,
         costScore=float(prediction[0]),

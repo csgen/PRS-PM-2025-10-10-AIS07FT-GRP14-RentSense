@@ -30,10 +30,11 @@ async def view_behavior_handler(
     )
     behaviorComplete = _get_behavior_complete(behavior=behavior, prop=prop)
 
-    # todo yyy: predict_omega方法报错
+    print(f'==============behaviorComplete: {behaviorComplete.model_dump_json(indent=2)}==============')
+
     preference: Optional[UserPreference] = predict_user_omega(behaviorComplete)
 
-    print(f'=============={preference.model_dump_json(indent=2)}==============')
+    print(f'==============preference: {preference.model_dump_json(indent=2)}==============')
     
     preference_crud.upsert_user_preference(db=db, preference=preference)
     
