@@ -1,14 +1,10 @@
-from typing import List, Optional, Tuple
+from typing import List
 
 from pydantic import ValidationError
-from app.models.preference import UserPreference
-from app.services.user_modeling.user_behavior import calculate_preference_score
 from app.models import EnquiryForm, Property
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
 from app.dataservice.sql_api.api import fetch_recommend_properties_async
-from app.database.crud import preference_crud
 
 
 # Get recommended property list (unsorted)
@@ -31,9 +27,8 @@ async def fetch_recommend_properties(params: EnquiryForm) -> List[Property]:
 
 
 # Sort recommended property list
-async def multi_objective_optimization_ranking(
+def multi_objective_optimization_ranking(
         *,
-        db: AsyncSession,
         enquiry: EnquiryForm,
         propertyList: List[Property]
 ) -> List[Property]:
@@ -51,18 +46,7 @@ async def multi_objective_optimization_ranking(
 
     properties_with_crowding = _calculate_crowding_distance(pareto_layers)
 
-    omega_weights: Optional[UserPreference] = \
-        await preference_crud.get_user_preference_by_device_id(db=db,device_id=enquiry.device_id)
-
-    ranked_properties = _final_ranking(
-        properties_with_crowding=properties_with_crowding, 
-        enquiry=enquiry,
-        omega_weights=(
-            omega_weights.costScore, 
-            omega_weights.commuteScore, 
-            omega_weights.neighborhoodScore
-        ) if omega_weights else None
-    )
+    ranked_properties = _final_ranking(properties_with_crowding, enquiry)
 
     return ranked_properties
 
@@ -188,41 +172,23 @@ def _calculate_crowding_distance(layers: List[List[Property]]) -> List[tuple]:
     return properties_with_crowding
 
 
-def _final_ranking(
-    *,
-    properties_with_crowding: List[tuple], 
-    enquiry: EnquiryForm,
-    omega_weights: Tuple[float, float, float] = None,
-    alpha: float = 0.5 
-) -> List[Property]:
-    
+def _final_ranking(properties_with_crowding: List[tuple], enquiry: EnquiryForm) -> List[Property]:
+
     ranked_data = []
-    
     for prop, layer_idx, crowding_dist in properties_with_crowding:
-        explicit_score = (
+        weighted_score = (
             enquiry.importance_rent * prop.costScore +
             enquiry.importance_location * prop.commuteScore +
             enquiry.importance_facility * prop.neighborhoodScore
         )
-        
-        if omega_weights is not None:
-            preference_result = calculate_preference_score(prop, omega_weights)
-            implicit_score = preference_result.final_score
-        else:
-            implicit_score = 0
-        
-        if omega_weights is not None:
-            final_score = alpha * implicit_score + (1 - alpha) * explicit_score
-        else:
-            final_score = explicit_score
-        
+
         ranked_data.append({
             'property': prop,
             'layer': layer_idx,
             'crowding': crowding_dist,
-            'weighted_score': final_score  
+            'weighted_score': weighted_score
         })
-    
+
     ranked_data.sort(
         key=lambda x: (
             x['layer'],
@@ -230,5 +196,5 @@ def _final_ranking(
             -x['weighted_score']
         )
     )
-    
+
     return [item['property'] for item in ranked_data]

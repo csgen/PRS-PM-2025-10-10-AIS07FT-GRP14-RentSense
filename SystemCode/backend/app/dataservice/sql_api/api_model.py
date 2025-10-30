@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, conint, confloat
 from typing import Optional
 
 class RequestInfo(BaseModel):
+    device_id: Optional[str] = Field(default=None, max_length=100, index=True)
     min_monthly_rent: int = Field(..., description="最低月租 (S$)")
     max_monthly_rent: int = Field(..., description="最高月租 (S$)")
     school_id: conint(ge=1, le=6) = Field(..., description="目标学校id（1-6）")

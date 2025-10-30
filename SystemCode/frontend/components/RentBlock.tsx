@@ -29,8 +29,12 @@ export default function RentBlock({ property }: RentBlockProps) {
   }, [property.property_id])
 
   const handleCardClick = () => {
+    // 追踪点击行为
     trackClick(property.property_id)
-    router.push(`/rent/${property.property_id}`, { state: { property } } as any)
+    // 将完整的 property 数据存储到 sessionStorage，供详情页使用
+    sessionStorage.setItem(`property_${property.property_id}`, JSON.stringify(property))
+    // 跳转到详情页
+    router.push(`/rent/${property.property_id}`)
   }
 
   const handleViewMap = (e: React.MouseEvent) => {
@@ -43,7 +47,9 @@ export default function RentBlock({ property }: RentBlockProps) {
   const handleViewDetails = (e: React.MouseEvent) => {
     e.stopPropagation()
     trackClick(property.property_id)
-    router.push(`/rent/${property.property_id}`, { state: { property } } as any)
+    // 将完整的 property 数据存储到 sessionStorage
+    sessionStorage.setItem(`property_${property.property_id}`, JSON.stringify(property))
+    router.push(`/rent/${property.property_id}`)
   }
 
   const handleFavoriteClick = (e: React.MouseEvent) => {

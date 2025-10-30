@@ -90,16 +90,22 @@ export default function RentDetailPage() {
         setLoading(true)
         setError(null)
 
-        const historyState = (window.history.state as any)?.state
-
-        if (historyState?.property) {
-          console.log("[v0] Property data from history state:", historyState.property)
-          setProperty(historyState.property)
-          await fetchMap(historyState.property)
-          setLoading(false)
-          return
+        // 1. 首先尝试从 sessionStorage 获取（最优先，来自列表页直接点击）
+        const sessionData = sessionStorage.getItem(`property_${id}`)
+        if (sessionData) {
+          try {
+            const propertyData = JSON.parse(sessionData)
+            console.log("[v0] Property data loaded from sessionStorage:", propertyData)
+            setProperty(propertyData)
+            await fetchMap(propertyData)
+            setLoading(false)
+            return
+          } catch (parseErr) {
+            console.error("[v0] Error parsing sessionStorage data:", parseErr)
+          }
         }
 
+        // 2. 尝试从 localStorage 的推荐列表中查找（备选方案）
         const savedData = localStorage.getItem("recommendations_data")
         if (savedData) {
           try {
@@ -107,28 +113,25 @@ export default function RentDetailPage() {
             const foundProperty = data.properties?.find((p: Property) => p.property_id === Number(id))
 
             if (foundProperty) {
-              console.log("[v0] Property data from localStorage:", foundProperty)
+              console.log("[v0] Property data loaded from localStorage:", foundProperty)
               setProperty(foundProperty)
+              // 同时保存到 sessionStorage 以便后续访问
+              sessionStorage.setItem(`property_${id}`, JSON.stringify(foundProperty))
               await fetchMap(foundProperty)
+              setLoading(false)
+              return
             }
           } catch (parseErr) {
             console.error("[v0] Error parsing localStorage data:", parseErr)
           }
         }
 
-        console.log("[v0] Fetching property from API, id:", id)
-        const response = await api.getPropertyDetail(Number(id))
+        // 3. 如果都没找到，显示错误（不再调用后端 API）
+        throw new Error("Property data not found. Please access from the recommendations page.")
 
-        if (response.data) {
-          console.log("[v0] Property data from API:", response.data)
-          setProperty(response.data)
-          await fetchMap(response.data)
-        } else {
-          throw new Error("Property not found")
-        }
       } catch (err: any) {
-        console.error("[v0] Error fetching property:", err)
-        setError(err.message || "Failed to load property details. Please try again or return to recommendations.")
+        console.error("[v0] Error loading property:", err)
+        setError(err.message || "Failed to load property details. Please return to recommendations page and try again.")
       } finally {
         setLoading(false)
       }
@@ -196,7 +199,7 @@ export default function RentDetailPage() {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {error || "Property not found. It may have been removed or the ID is invalid."}
+              {error || "Property not found. Please access from the recommendations page."}
             </AlertDescription>
           </Alert>
           <div className="flex gap-2">
