@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database.config import create_db_and_tables
 from app.routes.property import router as property_router
+from app.routes.behaviors import router as behavior_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 
@@ -36,6 +37,7 @@ app.add_middleware(
 )
 
 app.include_router(property_router)
+app.include_router(behavior_router)
 
 @app.get("/")
 async def root():
