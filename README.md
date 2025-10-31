@@ -30,8 +30,8 @@ RentSense extends this framework by incorporating behavioral feedback signals—
 
 ## SECTION 4 : VIDEO OF SYSTEM MODELLING & USE CASE DEMO
 
-[<img width="1126" height="633" alt="image" src="https://github.com/user-attachments/assets/5116ba38-5f5f-40ca-b1c8-43a33233958a" />
-](image.png)](https://youtu.be/vDm0wvQCVyE)
+[<img width="1126" height="633" alt="image" src="https://github.com/user-attachments/assets/74dd2688-a3a5-422d-8373-4c331743139b" />
+](https://youtu.be/vDm0wvQCVyE)
 
 ---
 
