@@ -36,7 +36,7 @@ RentSense extends this framework by incorporating behavioral feedback signals—
 ---
 
 ## SECTION 5 : USER GUIDE
-[Please click here to refer to the User Guide]https://github.com/csgen/PRS-PM-2025-10-10-AIS07FT-GRP6-RentSense/blob/master/ProjectReport/Installation%20and%20User%20Guide.pdf)
+[Please click here to refer to the User Guide](https://github.com/csgen/PRS-PM-2025-10-10-AIS07FT-GRP6-RentSense/blob/master/ProjectReport/Installation%20and%20User%20Guide.pdf)
 
 ---
 ## SECTION 6 : PROJECT REPORT
