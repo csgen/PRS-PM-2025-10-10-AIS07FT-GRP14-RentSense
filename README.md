@@ -22,7 +22,7 @@ RentSense extends this framework by incorporating behavioral feedback signals—
 | Official Full Name  | Student ID (MTech Applicable)  | Work Items (Who Did What) | Email (Optional) |
 | :------------ |:---------------:| :-----| :-----|
 | Chen Sigen | A0326351L | Content based module implementation; Reranking and scoreing integration development; User behavior dataset mocking; Final report integration| e1538182@u.nus.edu |
-| Qi Yilin | A0328843W | Backend Engineering; Cognition Layer; Documentation Contribution| e1553170@u.nus.edu |
+| Qi Yilin | A0328843W | - Backend Engineering (full development)；<br>- Cognition Module (full development)；<br>- Sensing Module (partial development)；<br>- Documentation (partial contribution) | e1553170@u.nus.edu |
 | Ru Yanjie | A0295237W | Collaborative Filtering Module development, Cloud deployment, Promotional video production| e1349375@u.nus.edu |
 | Yao Yiyang | A0294873L | Front-end development, Multi-objective optimization development, Technical video production| e1349011@u.nus.edu |
 
