@@ -1,7 +1,8 @@
 ## SECTION 1 : PROJECT TITLE
-## Intelligent Renting Recommendation System
+## RentSense: User-Pattern Based Renting Recommendation System
 
-![22a228d07bc1e503d0bffbdc6b5e1396](https://github.com/user-attachments/assets/49206030-3ce4-46a2-a011-3c909810b6a0)
+<img width="1126" height="633" alt="image" src="https://github.com/user-attachments/assets/dbacf916-8563-415f-93da-b3336a744ab2" />
+
 
 
 ---
@@ -29,7 +30,8 @@ RentSense extends this framework by incorporating behavioral feedback signals—
 
 ## SECTION 4 : VIDEO OF SYSTEM MODELLING & USE CASE DEMO
 
-[![alt text](image.png)](https://youtu.be/vDm0wvQCVyE)
+[<img width="1126" height="633" alt="image" src="https://github.com/user-attachments/assets/5116ba38-5f5f-40ca-b1c8-43a33233958a" />
+](image.png)](https://youtu.be/vDm0wvQCVyE)
 
 ---
 
@@ -48,9 +50,11 @@ Includes knowledge base data, mock user behavior datasets and model training fil
 [Please click here to refer to the Miscellaneous folder](https://github.com/csgen/PRS-PM-2025-10-10-AIS07FT-GRP6-RentSense/tree/master/Miscellaneous)
 
 ## SECTION 8: REFERENCE
+Project1 Repo:  
+[Please click here to refer to Project1 github link](https://github.com/csgen/IRS-PM-2025-10-01-ISY5001FT-GRP14-IntelligentRentingRecommendationSystem)
+
 Project1 Video:
 [![22a228d07bc1e503d0bffbdc6b5e1396](https://github.com/user-attachments/assets/b22dbd2a-8fe1-4e41-ba5c-8ac493ad7ca3)](https://youtu.be/keiCTkPs3p8)
 [<img width="1265" height="705" alt="image" src="https://github.com/user-attachments/assets/9ecd2189-d91f-4d64-8d5d-4cb52072fb26" />](https://youtu.be/lcBed8bz-TI)
-[Please click here to refer to Project1 github link](https://github.com/csgen/IRS-PM-2025-10-01-ISY5001FT-GRP14-IntelligentRentingRecommendationSystem)
 
 ---
